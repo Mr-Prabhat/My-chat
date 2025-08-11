@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Vunti - Real-Time Chat</title>
     <script src="https://unpkg.com/@supabase/supabase-js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <style>
         :root {
             --primary: #4361ee;
@@ -314,8 +317,14 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .message-sent {
@@ -435,8 +444,9 @@
             .app-container {
                 flex-direction: column;
             }
-            
-            .login-section, .chat-section {
+
+            .login-section,
+            .chat-section {
                 padding: 30px;
             }
         }
@@ -445,11 +455,11 @@
             .message {
                 max-width: 90%;
             }
-            
+
             .chat-input {
                 flex-direction: column;
             }
-            
+
             .send-btn {
                 width: 100%;
                 padding: 12px;
@@ -466,7 +476,7 @@
             <h1>Vunti Chat</h1>
             <p class="subtitle">Real-time messaging with anonymous login and user presence detection</p>
         </header>
-        
+
         <div class="app-container">
             <!-- Login Section -->
             <div class="login-section" id="loginSection">
@@ -474,16 +484,21 @@
                 <div class="login-form">
                     <div class="form-group">
                         <label for="username">Choose a username</label>
-                        <input type="text" id="username" placeholder="Enter a unique username" maxlength="20">
+                        <input
+                            type="text"
+                            id="username"
+                            placeholder="Enter a unique username"
+                            maxlength="20"
+                        />
                     </div>
                     <button class="btn" id="loginBtn">Sign Up / Log In</button>
-                    
+
                     <div class="divider"><span>or</span></div>
-                    
+
                     <button class="btn btn-guest" id="guestBtn">Join as Guest</button>
                 </div>
             </div>
-            
+
             <!-- Chat Section -->
             <div class="chat-section" id="chatSection">
                 <div class="chat-header">
@@ -501,7 +516,7 @@
                         <i class="fas fa-sign-out-alt"></i> Logout
                     </button>
                 </div>
-                
+
                 <div class="chat-container">
                     <div class="online-users">
                         <div class="online-title">
@@ -511,22 +526,24 @@
                             <!-- Online users will be displayed here -->
                         </div>
                     </div>
-                    
+
                     <div class="chat-messages" id="chatMessages">
                         <!-- Messages will be displayed here -->
                         <div class="message message-received">
                             <div class="message-username">System</div>
-                            <div class="message-text">Welcome to Vunti Chat! Send your first message to get started.</div>
+                            <div class="message-text">
+                                Welcome to Vunti Chat! Send your first message to get started.
+                            </div>
                             <div class="message-time">Just now</div>
                         </div>
                     </div>
-                    
+
                     <div class="chat-input">
-                        <div style="flex: 1;">
-                            <textarea 
-                                class="message-input" 
-                                id="messageInput" 
-                                placeholder="Type your message here..." 
+                        <div style="flex: 1">
+                            <textarea
+                                class="message-input"
+                                id="messageInput"
+                                placeholder="Type your message here..."
                                 maxlength="500"
                             ></textarea>
                             <div class="char-count" id="charCount">0/500</div>
@@ -538,7 +555,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Notification -->
         <div class="notification" id="notification">
             <i class="fas fa-info-circle"></i>
@@ -549,13 +566,13 @@
     <script>
         // Supabase configuration
         const SUPABASE_URL = 'https://fflawatbcocazbsblzkl.supabase.co';
-        // IMPORTANT: Replace with your actual Supabase anon key
-        const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE';
-        
-        // Initialize Supabase
+        const SUPABASE_KEY =
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmbGF3YXRiY29jYXpic2JsemtsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ1OTQzMDcsImV4cCI6MjA3MDE3MDMwN30.4bCY4AcHHsWsXJCvcVhoVXABdn7UV3S7pxIuX4jMoww';
+
+        // Initialize Supabase client
         const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        
-        // DOM Elements
+
+        // DOM elements
         const loginSection = document.getElementById('loginSection');
         const chatSection = document.getElementById('chatSection');
         const loginBtn = document.getElementById('loginBtn');
@@ -572,351 +589,328 @@
         const usersList = document.getElementById('usersList');
         const onlineCount = document.getElementById('onlineCount');
         const charCount = document.getElementById('charCount');
-        
-        // App State
+
+        // Current user state
         let currentUser = {
             id: null,
             username: null,
             isGuest: false,
-            lastMessageTime: 0
         };
-        
-        // Initialize the app
-        function init() {
-            // Event listeners
-            loginBtn.addEventListener('click', handleLogin);
-            guestBtn.addEventListener('click', handleGuestLogin);
-            logoutBtn.addEventListener('click', handleLogout);
-            sendBtn.addEventListener('click', sendMessage);
-            messageInput.addEventListener('input', updateCharCount);
-            messageInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    sendMessage();
-                }
-            });
-            
-            // Update character count
-            updateCharCount();
-            
-            // Check for existing session
-            const savedUser = localStorage.getItem('vunti_user');
-            if (savedUser) {
-                currentUser = JSON.parse(savedUser);
-                showChatSection();
-                setupRealtime();
-            }
+
+        // Show notification helper
+        function showNotification(message, type = 'info') {
+            notificationText.textContent = message;
+            notification.className = 'notification show';
+            if (type === 'error') notification.classList.add('error');
+            else if (type === 'success') notification.classList.add('success');
+            else if (type === 'warning') notification.classList.add('warning');
+
+            setTimeout(() => {
+                notification.className = 'notification';
+            }, 3000);
         }
-        
-        // Handle regular login
-        async function handleLogin() {
-            const username = usernameInput.value.trim();
-            
-            if (!username) {
-                showNotification('Please enter a username', 'error');
-                return;
-            }
-            
-            if (username.length < 3) {
-                showNotification('Username must be at least 3 characters', 'error');
-                return;
-            }
-            
-            // Check if username exists
-            const { data: existingUser, error } = await supabase
-                .from('users')
-                .select('id')
-                .eq('username', username)
-                .single();
-            
-            if (error && error.message !== 'No rows found') {
-                showNotification('Error checking username: ' + error.message, 'error');
-                return;
-            }
-            
-            if (existingUser) {
-                // Existing user - log them in
-                currentUser = {
-                    id: existingUser.id,
-                    username: username,
-                    isGuest: false
-                };
-            } else {
-                // New user - create account
-                const { data: newUser, error: insertError } = await supabase
-                    .from('users')
-                    .insert([{ username }])
-                    .select('id')
-                    .single();
-                
-                if (insertError) {
-                    showNotification('Error creating account: ' + insertError.message, 'error');
-                    return;
-                }
-                
-                currentUser = {
-                    id: newUser.id,
-                    username: username,
-                    isGuest: false
-                };
-            }
-            
-            // Save to localStorage
-            localStorage.setItem('vunti_user', JSON.stringify(currentUser));
-            
-            showChatSection();
-            setupRealtime();
-            showNotification(`Welcome, ${username}!`, 'success');
+
+        // Update character count in message input
+        function updateCharCount() {
+            const length = messageInput.value.length;
+            charCount.textContent = `${length}/500`;
+
+            charCount.classList.remove('warning', 'error');
+            if (length > 450 && length < 500) charCount.classList.add('warning');
+            else if (length === 500) charCount.classList.add('error');
         }
-        
-        // Handle guest login
-        function handleGuestLogin() {
-            // Generate guest ID
-            const guestId = 'guest-' + Math.random().toString(36).substr(2, 8);
-            
-            currentUser = {
-                id: guestId,
-                username: `Guest-${Math.floor(1000 + Math.random() * 9000)}`,
-                isGuest: true
-            };
-            
-            // Save to localStorage
-            localStorage.setItem('vunti_user', JSON.stringify(currentUser));
-            
-            showChatSection();
-            setupRealtime();
-            showNotification(`Welcome, ${currentUser.username}!`, 'success');
-        }
-        
-        // Handle logout
-        function handleLogout() {
-            localStorage.removeItem('vunti_user');
-            currentUser = { id: null, username: null, isGuest: false };
-            
-            // Hide chat section, show login section
-            chatSection.style.display = 'none';
-            loginSection.style.display = 'flex';
-            
-            // Reset UI
-            usernameInput.value = '';
-            messageInput.value = '';
-            chatMessages.innerHTML = `
-                <div class="message message-received">
-                    <div class="message-username">System</div>
-                    <div class="message-text">Welcome to Vunti Chat! Send your first message to get started.</div>
-                    <div class="message-time">Just now</div>
-                </div>
-            `;
-            
-            showNotification('You have been logged out', 'warning');
-        }
-        
-        // Show chat section
+
+        // Show chat section & hide login
         function showChatSection() {
             loginSection.style.display = 'none';
             chatSection.style.display = 'flex';
-            
-            // Update UI with user info
             displayUsername.textContent = currentUser.username;
             userAvatar.textContent = currentUser.username.charAt(0).toUpperCase();
-            
-            // Fetch previous messages
-            fetchMessages();
+            messageInput.focus();
         }
-        
-        // Setup realtime subscriptions
-        function setupRealtime() {
-            // Subscribe to new messages
+
+        // Show login section & hide chat
+        function showLoginSection() {
+            loginSection.style
+            display = 'flex';
+            chatSection.style.display = 'none';
+            currentUser = { id: null, username: null, isGuest: false };
+            usersList.innerHTML = '';
+            chatMessages.innerHTML = '';
+            usernameInput.value = '';
+            messageInput.value = '';
+            updateCharCount();
+        }
+
+        // Sanitize string to avoid XSS
+        function sanitize(str) {
+            const temp = document.createElement('div');
+            temp.textContent = str;
+            return temp.innerHTML;
+        }
+
+        // Fetch and display messages
+        async function loadMessages() {
+            let { data, error } = await supabase
+                .from('messages')
+                .select('*')
+                .order('created_at', { ascending: true })
+                .limit(100);
+
+            if (error) {
+                showNotification('Error loading messages', 'error');
+                return;
+            }
+
+            chatMessages.innerHTML = '';
+
+            data.forEach((msg) => {
+                addMessageToChat(msg);
+            });
+
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Add single message to chat
+        function addMessageToChat(msg) {
+            const messageEl = document.createElement('div');
+            messageEl.classList.add('message');
+            if (msg.user_id === currentUser.id) {
+                messageEl.classList.add('message-sent');
+            } else {
+                messageEl.classList.add('message-received');
+            }
+
+            messageEl.innerHTML = `
+                <div class="message-username">${sanitize(msg.username)}</div>
+                <div class="message-text">${sanitize(msg.content)}</div>
+                <div class="message-time">${new Date(msg.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+            `;
+
+            chatMessages.appendChild(messageEl);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Send a new message
+        async function sendMessage() {
+            const content = messageInput.value.trim();
+            if (!content) return;
+
+            if (content.length > 500) {
+                showNotification('Message is too long (max 500 characters)', 'error');
+                return;
+            }
+
+            const message = {
+                user_id: currentUser.id,
+                username: currentUser.username,
+                content: content,
+                created_at: new Date().toISOString(),
+            };
+
+            const { data, error } = await supabase.from('messages').insert([message]);
+
+            if (error) {
+                showNotification('Failed to send message', 'error');
+                return;
+            }
+
+            messageInput.value = '';
+            updateCharCount();
+            // Message will appear via real-time subscription
+        }
+
+        // Subscribe to messages in real-time
+        function subscribeToMessages() {
             supabase
                 .channel('public:messages')
                 .on(
                     'postgres_changes',
-                    { event: 'INSERT', schema: 'public', table: 'messages' },
+                    { event: '*', schema: 'public', table: 'messages' },
                     (payload) => {
-                        addMessageToUI(payload.new);
+                        addMessageToChat(payload.new);
                     }
                 )
                 .subscribe();
-            
-            // Subscribe to presence channel for online users
-            const presenceChannel = supabase.channel('online-users', {
-                config: {
-                    presence: {
-                        key: currentUser.id,
-                    },
-                },
+        }
+
+        // Update online users UI
+        function updateOnlineUsers(users) {
+            usersList.innerHTML = '';
+            onlineCount.textContent = users.length;
+
+            users.forEach((user) => {
+                const userTag = document.createElement('div');
+                userTag.classList.add('user-tag');
+                userTag.innerHTML = `
+                    <div class="status"></div> ${sanitize(user.username)}
+                `;
+                usersList.appendChild(userTag);
             });
-            
+        }
+
+        // Presence tracking
+        let presenceChannel = null;
+
+        async function setupPresence() {
+            if (presenceChannel) {
+                await supabase.removeChannel(presenceChannel);
+            }
+
+            presenceChannel = supabase.channel('presence-users');
+
             presenceChannel.on('presence', { event: 'sync' }, () => {
                 const state = presenceChannel.presenceState();
-                updateOnlineUsers(state);
+                const users = Object.values(state).map((u) => u[0]);
+                updateOnlineUsers(users);
             });
-            
-            presenceChannel.subscribe(async (status) => {
-                if (status === 'SUBSCRIBED') {
-                    await presenceChannel.track({
-                        user_id: currentUser.id,
-                        username: currentUser.username,
-                        is_guest: currentUser.isGuest,
-                        online_at: new Date().toISOString(),
-                    });
-                }
+
+            presenceChannel.on('presence', { event: 'join' }, (e) => {
+                const users = Object.values(presenceChannel.presenceState()).map((u) => u[0]);
+                updateOnlineUsers(users);
+            });
+
+            presenceChannel.on('presence', { event: 'leave' }, (e) => {
+                const users = Object.values(presenceChannel.presenceState()).map((u) => u[0]);
+                updateOnlineUsers(users);
+            });
+
+            await presenceChannel.subscribe();
+
+            // Track current user presence
+            await presenceChannel.track({
+                user_id: currentUser.id,
+                username: currentUser.username,
             });
         }
-        
-        // Update online users list
-        function updateOnlineUsers(state) {
-            // Clear current list
-            usersList.innerHTML = '';
-            
-            // Count online users
-            let count = 0;
-            
-            // Add each user to the list
-            for (const [key, value] of Object.entries(state)) {
-                value.forEach((user) => {
-                    const userEl = document.createElement('div');
-                    userEl.className = 'user-tag';
-                    userEl.innerHTML = `
-                        <div class="status"></div>
-                        ${user.username}${user.is_guest ? ' (Guest)' : ''}
-                    `;
-                    usersList.appendChild(userEl);
-                    count++;
-                });
-            }
-            
-            // Update count
-            onlineCount.textContent = count;
+
+        // Check if username exists
+        async function isUsernameTaken(username) {
+            const { data, error } = await supabase
+                .from('users')
+                .select('username')
+                .eq('username', username)
+                .single();
+
+            return !!data;
         }
-        
-        // Fetch previous messages
-        async function fetchMessages() {
-            const { data: messages, error } = await supabase
-                .from('messages')
+
+        // Create or fetch user
+        async function createOrFetchUser(username) {
+            // Check if user exists
+            const { data, error } = await supabase
+                .from('users')
                 .select('*')
-                .order('created_at', { ascending: false })
-                .limit(50);
-            
-            if (error) {
-                showNotification('Error loading messages: ' + error.message, 'error');
-                return;
+                .eq('username', username)
+                .single();
+
+            if (data) {
+                return data;
+            } else {
+                // Create new user
+                const { data: newUser, error: insertError } = await supabase
+                    .from('users')
+                    .insert([{ username }])
+                    .select()
+                    .single();
+
+                if (insertError) {
+                    showNotification('Error creating user', 'error');
+                    return null;
+                }
+                return newUser;
             }
-            
-            // Clear current messages (except the welcome message)
-            chatMessages.innerHTML = '';
-            
-            // Add messages to UI in reverse order (oldest first)
-            messages.reverse().forEach(addMessageToUI);
-            
-            // Scroll to bottom
-            chatMessages.scrollTop = chatMessages.scrollHeight;
         }
-        
-        // Add message to UI
-        function addMessageToUI(message) {
-            const messageEl = document.createElement('div');
-            const isCurrentUser = message.user_id === currentUser.id;
-            
-            const date = new Date(message.created_at);
-            const timeString = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            
-            messageEl.className = `message ${isCurrentUser ? 'message-sent' : 'message-received'}`;
-            messageEl.innerHTML = `
-                <div class="message-username">${message.username}${message.is_guest ? ' (Guest)' : ''}</div>
-                <div class="message-text">${escapeHtml(message.message)}</div>
-                <div class="message-time">${timeString}</div>
-            `;
-            
-            chatMessages.appendChild(messageEl);
-            
-            // Scroll to bottom
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        // Handle login with username
+        async function handleLogin() {
+            const username = usernameInput.value.trim();
+            if (!username) {
+                showNotification('Please enter a username', 'warning');
+                return;
+            }
+
+            if (username.length < 3) {
+                showNotification('Username must be at least 3 characters', 'warning');
+                return;
+            }
+
+            if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+                showNotification('Username can only contain letters, numbers, and underscores', 'warning');
+                return;
+            }
+
+            const taken = await isUsernameTaken(username);
+            if (taken) {
+                showNotification('Username is already taken. Please choose another.', 'error');
+                return;
+            }
+
+            const user = await createOrFetchUser(username);
+            if (!user) return;
+
+            currentUser.id = user.id;
+            currentUser.username = user.username;
+            currentUser.isGuest = false;
+
+            showChatSection();
+            loadMessages();
+            subscribeToMessages();
+            setupPresence();
+
+            showNotification(`Welcome, ${currentUser.username}!`, 'success');
         }
-        
-        // Send message
-        async function sendMessage() {
-            const message = messageInput.value.trim();
-            
-            // Validate message
-            if (!message) {
-                showNotification('Message cannot be empty', 'error');
-                return;
-            }
-            
-            if (message.length > 500) {
-                showNotification('Message is too long (max 500 characters)', 'error');
-                return;
-            }
-            
-            // Rate limiting (1 message every 3 seconds)
-            const now = Date.now();
-            if (now - currentUser.lastMessageTime < 3000) {
-                showNotification('Please wait a moment before sending another message', 'warning');
-                return;
-            }
-            
-            currentUser.lastMessageTime = now;
-            
-            // Insert message into database
-            const { error } = await supabase
-                .from('messages')
-                .insert([{
+
+        // Handle guest login
+        async function handleGuestLogin() {
+            // Generate random username
+            const guestName = 'Guest' + Math.floor(Math.random() * 10000);
+
+            currentUser.id = guestName;
+            currentUser.username = guestName;
+            currentUser.isGuest = true;
+
+            showChatSection();
+            loadMessages();
+            subscribeToMessages();
+            setupPresence();
+
+            showNotification(`Joined as ${guestName}`, 'success');
+        }
+
+        // Logout user
+        async function handleLogout() {
+            // Untrack presence
+            if (presenceChannel) {
+                await presenceChannel.untrack({
                     user_id: currentUser.id,
                     username: currentUser.username,
-                    is_guest: currentUser.isGuest,
-                    message: message
-                }]);
-            
-            if (error) {
-                showNotification('Error sending message: ' + error.message, 'error');
-                return;
+                });
+                await supabase.removeChannel(presenceChannel);
+                presenceChannel = null;
             }
-            
-            // Clear input
-            messageInput.value = '';
-            updateCharCount();
-            
-            // Focus input
-            messageInput.focus();
+
+            showLoginSection();
+            showNotification('Logged out', 'success');
         }
-        
-        // Update character count
-        function updateCharCount() {
-            const length = messageInput.value.length;
-            charCount.textContent = `${length}/500`;
-            
-            if (length > 450) {
-                charCount.className = 'char-count warning';
-            } else if (length > 495) {
-                charCount.className = 'char-count error';
-            } else {
-                charCount.className = 'char-count';
+
+        // Event listeners
+        loginBtn.addEventListener('click', handleLogin);
+        guestBtn.addEventListener('click', handleGuestLogin);
+        logoutBtn.addEventListener('click', handleLogout);
+
+        sendBtn.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
             }
-        }
-        
-        // Show notification
-        function showNotification(text, type) {
-            notificationText.textContent = text;
-            notification.className = `notification ${type} show`;
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 3000);
-        }
-        
-        // Helper function to escape HTML
-        function escapeHtml(unsafe) {
-            return unsafe
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
-        }
-        
-        // Initialize the app when DOM is loaded
-        document.addEventListener('DOMContentLoaded', init);
+        });
+
+        messageInput.addEventListener('input', updateCharCount);
+
+        // On page load
+        updateCharCount();
     </script>
 </body>
 </html>
