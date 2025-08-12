@@ -1,376 +1,323 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>vunti — Realtime Chat</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Vunti Chat</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet" />
   <style>
-    :root {
-      --bg: #071025;
-      --card: #071524;
-      --muted: #9aa5b1;
-      --accent: #7dd3fc;
-      --glass: rgba(255,255,255,0.03);
+    body {
+      margin: 0; padding: 0; background: #071025; color: #e6eef6; font-family: 'Inter', sans-serif;
+      display: flex; justify-content: center; align-items: center; height: 100vh;
     }
-    * { box-sizing: border-box; }
-    html, body {
-      margin: 0; padding: 0; height: 100%;
-      font-family: Inter, system-ui, sans-serif;
-      background: linear-gradient(180deg, #071025 0%, #071833 100%);
-      color: #e6eef6;
-    }
-    .container {
-      max-width: 1000px;
-      margin: 20px auto;
-      padding: 0 10px;
-      height: calc(100% - 40px);
-    }
-    .card {
-      display: grid;
-      grid-template-columns: 300px 1fr;
-      height: 100%;
-      background: var(--card);
-      border-radius: 12px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    #app {
+      width: 100%; max-width: 900px; height: 90vh; background: #071524;
+      border-radius: 12px; box-shadow: 0 0 40px rgba(0,0,0,0.7);
+      display: grid; grid-template-columns: 280px 1fr;
       overflow: hidden;
     }
     .sidebar {
-      padding: 20px;
-      border-right: 1px solid rgba(255,255,255,0.1);
+      padding: 20px; border-right: 1px solid rgba(255,255,255,0.1);
+      display: flex; flex-direction: column;
     }
     .brand {
-      font-size: 24px;
-      font-weight: 700;
-      color: var(--accent);
-      margin-bottom: 20px;
+      font-size: 28px; font-weight: 700; color: #7dd3fc; margin-bottom: 20px;
     }
     .profile {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 20px;
+      display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
     }
     .avatar {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      background: var(--accent);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      color: #07232d;
+      width: 48px; height: 48px; border-radius: 50%; background: #7dd3fc;
+      display: flex; align-items: center; justify-content: center;
+      color: #07232d; font-weight: 700; font-size: 24px;
     }
-    .btn {
-      display: inline-block;
-      padding: 8px 12px;
-      margin-right: 8px;
-      background: var(--glass);
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      color: inherit;
+    .profile-info {
+      flex-grow: 1;
+    }
+    .profile-info > div:first-child {
+      font-weight: 600; font-size: 18px;
+    }
+    .profile-info > div:last-child {
+      font-size: 12px; color: #9aa5b1;
+    }
+    button {
+      background: #7dd3fc; color: #07232d; border: none; border-radius: 8px;
+      padding: 10px 14px; margin-top: 8px; cursor: pointer;
+      font-weight: 600; transition: background 0.3s ease;
+    }
+    button:hover {
+      background: #58b5dc;
     }
     .rooms {
-      margin-top: 20px;
+      margin-top: 24px;
+      display: flex; flex-direction: column; gap: 8px;
+      flex-grow: 1;
     }
     .room {
-      padding: 10px;
-      border-radius: 6px;
-      background: var(--glass);
-      margin-bottom: 8px;
-      cursor: pointer;
+      padding: 10px; background: rgba(255,255,255,0.05);
+      border-radius: 8px; cursor: pointer; font-weight: 600;
+      transition: background 0.3s ease;
+      user-select: none;
     }
     .room.active {
-      background: var(--accent);
-      color: #07232d;
+      background: #7dd3fc; color: #07232d;
     }
     .main {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
+      display: flex; flex-direction: column; height: 100%;
     }
     .header {
-      padding: 20px;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .room-name {
-      font-size: 18px;
-      font-weight: 600;
-    }
-    .status {
-      font-size: 14px;
-      color: var(--muted);
+      padding: 16px 24px; border-bottom: 1px solid rgba(255,255,255,0.1);
+      display: flex; align-items: center; justify-content: space-between;
+      font-weight: 600; font-size: 20px; color: #7dd3fc;
     }
     .messages {
-      flex: 1;
-      padding: 20px;
-      overflow-y: auto;
+      flex-grow: 1; padding: 20px; overflow-y: auto;
+      display: flex; flex-direction: column; gap: 12px;
+      background: #071025;
     }
-    .msg {
-      max-width: 70%;
-      margin-bottom: 12px;
-      padding: 10px;
-      border-radius: 8px;
-      background: var(--glass);
+    .message {
+      max-width: 70%; padding: 14px; border-radius: 12px;
+      background: rgba(125, 211, 252, 0.15);
+      color: #d0e6fc;
+      font-size: 14px;
+      line-height: 1.4;
+      user-select: text;
+      white-space: pre-wrap;
+      word-wrap: break-word;
     }
-    .msg.me {
-      margin-left: auto;
-      background: var(--accent);
+    .message.me {
+      background: #7dd3fc;
       color: #07232d;
+      margin-left: auto;
     }
-    .msg .meta {
-      font-size: 12px;
-      color: var(--muted);
-      margin-bottom: 6px;
+    .meta {
+      font-size: 12px; color: #9aa5b1; margin-bottom: 4px;
     }
     .composer {
-      display: flex;
-      padding: 14px;
-      border-top: 1px solid rgba(255,255,255,0.1);
+      display: flex; border-top: 1px solid rgba(255,255,255,0.1);
+      padding: 12px 20px;
+      background: #071524;
     }
     .composer input {
-      flex: 1;
-      padding: 10px;
-      background: var(--glass);
+      flex-grow: 1;
+      padding: 12px 16px;
       border: none;
-      border-radius: 8px;
-      margin-right: 8px;
-      color: inherit;
+      border-radius: 10px;
+      font-size: 16px;
+      outline: none;
+      color: #e6eef6;
+      background: rgba(255,255,255,0.05);
+      margin-right: 12px;
     }
     .composer button {
-      padding: 10px 14px;
-      background: var(--accent);
+      background: #7dd3fc;
       border: none;
-      border-radius: 8px;
+      padding: 0 20px;
+      border-radius: 10px;
+      font-weight: 600;
       color: #07232d;
       cursor: pointer;
+      transition: background 0.3s ease;
     }
-    .diag {
-      margin-top: 12px;
-      padding: 12px;
-      background: rgba(0,0,0,0.2);
-      font-size: 13px;
-      border-radius: 8px;
-    }
-    .diag pre {
-      height: 100px;
-      overflow: auto;
-      background: rgba(255,255,255,0.05);
-      padding: 8px;
-      border-radius: 6px;
-      margin-top: 8px;
+    .composer button:hover {
+      background: #58b5dc;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="card">
-      <div class="sidebar">
-        <div class="brand">vunti</div>
-        <div class="profile">
-          <div class="avatar" id="avatar">G</div>
-          <div>
-            <div id="username">Guest</div>
-            <div class="small" id="user-id">Not signed in</div>
-          </div>
-        </div>
-        <button class="btn" id="btn-magic">Magic Link</button>
-        <button class="btn" id="btn-signout">Sign out</button>
-        <div class="rooms">
-          <div class="room active" data-room="general"># general</div>
-          <div class="room" data-room="random"># random</div>
-        </div>
-        <div class="diag">
-          <div><strong>Diagnostics</strong></div>
-          <button class="btn" id="run-diag">Run diagnostics</button>
-          <pre id="diag-log">Diagnostics not run yet.</pre>
+  <div id="app" role="main">
+    <div class="sidebar" role="complementary" aria-label="Sidebar">
+      <div class="brand">Vunti</div>
+      <div class="profile">
+        <div class="avatar" id="avatar">G</div>
+        <div class="profile-info">
+          <div id="username">Guest</div>
+          <div id="userid" style="font-size: 12px; color: #9aa5b1;">Not signed in</div>
         </div>
       </div>
-      <div class="main">
-        <div class="header">
-          <div class="room-name" id="room-title"># general</div>
-          <div class="status" id="status">Connecting…</div>
-        </div>
-        <div class="messages" id="messages"></div>
-        <div class="composer">
-          <input id="input" placeholder="Say something nice..." />
-          <button id="send">Send</button>
-        </div>
+      <button id="btn-magic">Send Magic Link</button>
+      <button id="btn-signout">Sign Out</button>
+      <div class="rooms" role="navigation" aria-label="Chat Rooms">
+        <div class="room active" data-room="general"># general</div>
+        <div class="room" data-room="random"># random</div>
       </div>
     </div>
+    <section class="main" role="main">
+      <header class="header" aria-live="polite">
+        <div id="room-title"># general</div>
+        <div id="status" style="font-weight: normal; font-size: 14px; color: #9aa5b1;">Connecting…</div>
+      </header>
+      <div class="messages" id="messages" aria-live="polite" role="log"></div>
+      <form class="composer" id="form" aria-label="Send message">
+        <input id="input" type="text" placeholder="Type your message here…" autocomplete="off" aria-required="true" />
+        <button type="submit" id="send">Send</button>
+      </form>
+    </section>
   </div>
+
   <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
     const SUPABASE_URL = 'https://fflawatbcocazbsblzkl.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmbGF3YXRiY29jYXpic2JsemtsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ1OTQzMDcsImV4cCI6MjA3MDE3MDMwN30.4bCY4AcHHsWsXJCvcVhoVXABdn7UV3S7pxIuX4jMoww';
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+    const avatarEl = document.getElementById('avatar');
+    const usernameEl = document.getElementById('username');
+    const useridEl = document.getElementById('userid');
+    const statusEl = document.getElementById('status');
+    const roomTitleEl = document.getElementById('room-title');
     const messagesEl = document.getElementById('messages');
     const inputEl = document.getElementById('input');
-    const sendBtn = document.getElementById('send');
-    const roomEls = document.querySelectorAll('.room');
-    const roomTitleEl = document.getElementById('room-title');
-    const statusEl = document.getElementById('status');
-    const usernameEl = document.getElementById('username');
-    const userIdEl = document.getElementById('user-id');
-    const avatarEl = document.getElementById('avatar');
-    const diagLog = document.getElementById('diag-log');
+    const form = document.getElementById('form');
+    const rooms = document.querySelectorAll('.room');
+    const btnMagic = document.getElementById('btn-magic');
+    const btnSignout = document.getElementById('btn-signout');
 
     let session = null;
     let currentRoom = 'general';
     let channel = null;
 
-    function logDiag(msg) {
-      diagLog.textContent = `${new Date().toLocaleTimeString()} — ${msg}\n` + diagLog.textContent;
+    function escapeHtml(text) {
+      return text.replace(/[&<>"']/g, function(m) {
+        return {
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#39;'
+        }[m];
+      });
     }
 
-    function escapeHtml(s) {
-      return String(s).replace(/[&<>"]/g, c =>
-        ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])
-      );
-    }
-
-    function renderMessage(m) {
-      const mine = session?.user?.id === m.user_id;
+    function renderMessage(message) {
+      const isMe = session?.user?.id === message.user_id;
       const div = document.createElement('div');
-      div.className = 'msg' + (mine ? ' me' : '');
-      const meta = `<div class="meta">${escapeHtml(m.username || 'anon')} • ${new Date(m.inserted_at).toLocaleTimeString()}</div>`;
-      div.innerHTML = meta + `<div>${escapeHtml(m.content)}</div>`;
+      div.className = 'message' + (isMe ? ' me' : '');
+      div.innerHTML = `
+        <div class="meta">${escapeHtml(message.username || 'anon')} • ${new Date(message.inserted_at).toLocaleTimeString()}</div>
+        <div class="content">${escapeHtml(message.content)}</div>
+      `;
       messagesEl.appendChild(div);
       messagesEl.scrollTop = messagesEl.scrollHeight;
     }
 
     async function loadMessages() {
-      statusEl.textContent = 'Loading…';
+      statusEl.textContent = 'Loading messages…';
       messagesEl.innerHTML = '';
       try {
         const { data, error } = await supabase
           .from('messages')
           .select('*')
-          .eq('room', currentRoom)
+          .eq('channel', currentRoom)
           .order('inserted_at', { ascending: true })
           .limit(200);
 
-        if (error) {
-          console.error('SDK error:', error);
-          logDiag('SDK error: ' + error.message);
-          fallbackRest();
-          return;
-        }
-
+        if (error) throw error;
         data.forEach(renderMessage);
         statusEl.textContent = 'Synced';
-        logDiag(`Loaded ${data.length} messages (SDK)`);
-      } catch (e) {
-        console.error('Fetch error:', e);
-        logDiag('Fetch exception: ' + e.message);
-        fallbackRest();
+      } catch (error) {
+        console.error('Error loading messages:', error);
+        statusEl.textContent = 'Error loading messages';
       }
     }
 
-    async function fallbackRest() {
-      logDiag('Falling back to REST fetch');
-      const url = `${SUPABASE_URL}/rest/v1/messages?select=*&room=eq.${encodeURIComponent(currentRoom)}&limit=200`;
-      try {
-        const resp = await fetch(url, {
-          headers: {
-            apikey: SUPABASE_ANON_KEY,
-            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-          }
-        });
-        logDiag(`REST status: ${resp.status}`);
-        const json = await resp.json();
-        messagesEl.innerHTML = '';
-        json.forEach(renderMessage);
-        statusEl.textContent = resp.ok ? 'Synced (REST)' : 'Error';
-      } catch (e) {
-        console.error('REST error:', e);
-        logDiag('REST exception: ' + e.message);
-        statusEl.textContent = 'Error';
-      }
-    }
-
-    function setupRealtime() {
+    function subscribeMessages() {
       if (channel) channel.unsubscribe();
       channel = supabase
         .channel('public:messages')
-        .on('postgres_changes', { schema: 'public', table: 'messages', event: 'INSERT' }, payload => {
-          if (payload.new.room === currentRoom) renderMessage(payload.new);
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
+          if (payload.new.channel === currentRoom) {
+            renderMessage(payload.new);
+          }
         })
         .subscribe();
     }
 
-    async function sendMessage() {
-      const content = inputEl.value.trim();
-      if (!content) return;
+    async function sendMessage(content) {
+      if (!content.trim()) return;
       try {
-        await supabase.from('messages').insert([{ room: currentRoom, content, username: session?.user?.email || 'Guest', user_id: session?.user?.id || null }]);
-        inputEl.value = '';
-      } catch (e) {
-        console.error('Send error:', e);
-        logDiag('Send error: ' + e.message);
-        alert('Send failed, check diagnostics.');
+        await supabase
+          .from('messages')
+          .insert([
+            {
+              channel: currentRoom,
+              content,
+              username: session?.user?.email || 'Guest',
+              user_id: session?.user?.id || null,
+            }
+          ]);
+      } catch (error) {
+        console.error('Error sending message:', error);
+        alert('Failed to send message.');
       }
     }
 
-    async function runDiagnostics() {
-      logDiag('Starting diagnostics');
-      await loadMessages();
-      setupRealtime();
-      logDiag('Diagnostics done');
-    }
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const val = inputEl.value;
+      if (!val.trim()) return;
+      await sendMessage(val);
+      inputEl.value = '';
+    });
 
-    supabase.auth.onAuthStateChange((_, s) => {
-      session = s;
+    rooms.forEach(roomEl => {
+      roomEl.addEventListener('click', async () => {
+        rooms.forEach(r => r.classList.remove('active'));
+        roomEl.classList.add('active');
+        currentRoom = roomEl.dataset.room;
+        roomTitleEl.textContent = `# ${currentRoom}`;
+        messagesEl.innerHTML = '';
+        await loadMessages();
+      });
+    });
+
+    btnMagic.addEventListener('click', async () => {
+      const email = prompt('Enter your email for a magic link sign-in:');
+      if (!email) return;
+      const { error } = await supabase.auth.signInWithOtp({ email });
+      if (error) alert('Error sending magic link: ' + error.message);
+      else alert('Check your email for the magic link!');
+    });
+
+    btnSignout.addEventListener('click', async () => {
+      await supabase.auth.signOut();
+      session = null;
+      usernameEl.textContent = 'Guest';
+      useridEl.textContent = 'Not signed in';
+      avatarEl.textContent = 'G';
+      await loadMessages();
+    });
+
+    supabase.auth.onAuthStateChange((_event, newSession) => {
+      session = newSession;
       if (session) {
-        const u = session.user;
-        usernameEl.textContent = u.user_metadata.full_name || u.email;
-        userIdEl.textContent = u.id;
+        const user = session.user;
+        usernameEl.textContent = user.user_metadata?.full_name || user.email || 'User';
+        useridEl.textContent = user.id;
         avatarEl.textContent = usernameEl.textContent[0].toUpperCase();
       } else {
         usernameEl.textContent = 'Guest';
-        userIdEl.textContent = 'Not signed in';
+        useridEl.textContent = 'Not signed in';
         avatarEl.textContent = 'G';
       }
       loadMessages();
     });
 
-    async function init() {
+    // Initial load
+    (async () => {
       const { data } = await supabase.auth.getSession();
       session = data.session;
-      supabase.auth.onAuthStateChange((_, s) => session = s);
-      setupRealtime();
+      if (session) {
+        const user = session.user;
+        usernameEl.textContent = user.user_metadata?.full_name || user.email || 'User';
+        useridEl.textContent = user.id;
+        avatarEl.textContent = usernameEl.textContent[0].toUpperCase();
+      }
+      subscribeMessages();
       loadMessages();
-    }
-
-    sendBtn.onclick = sendMessage;
-    document.getElementById('run-diag').onclick = runDiagnostics;
-    roomEls.forEach(r => r.onclick = async () => {
-      roomEls.forEach(x => x.classList.remove('active'));
-      r.classList.add('active');
-      currentRoom = r.dataset.room;
-      roomTitleEl.textContent = `# ${currentRoom}`;
-      await loadMessages();
-    });
-    document.getElementById('btn-magic').onclick = async () => {
-      const email = prompt('Enter your email for a magic link:');
-      if (!email) return;
-      const { error } = await supabase.auth.signInWithOtp({ email });
-      if (error) alert('Error: ' + error.message);
-    };
-    document.getElementById('btn-signout').onclick = async () => {
-      await supabase.auth.signOut();
-      alert('Signed out');
-      loadMessages();
-    };
-
-    // Start
-    init();
+    })();
   </script>
 </body>
 </html>
