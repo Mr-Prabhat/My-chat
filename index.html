@@ -1,916 +1,376 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Vunti - Real-Time Chat</title>
-    <script src="https://unpkg.com/@supabase/supabase-js"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <style>
-        :root {
-            --primary: #4361ee;
-            --primary-dark: #3a56d4;
-            --secondary: #7209b7;
-            --light: #f8f9fa;
-            --dark: #212529;
-            --gray: #6c757d;
-            --light-gray: #e9ecef;
-            --success: #4cc9f0;
-            --danger: #f72585;
-            --border-radius: 12px;
-            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            --transition: all 0.3s ease;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            color: var(--dark);
-        }
-
-        .container {
-            max-width: 1200px;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .logo {
-            font-size: 3.5rem;
-            color: white;
-            margin-bottom: 10px;
-        }
-
-        h1 {
-            color: white;
-            font-size: 2.5rem;
-            margin-bottom: 5px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .subtitle {
-            color: rgba(255, 255, 255, 0.85);
-            font-size: 1.1rem;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .app-container {
-            display: flex;
-            background: white;
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            box-shadow: var(--box-shadow);
-            min-height: 600px;
-        }
-
-        .login-section, .chat-section {
-            padding: 40px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .login-section {
-            background: var(--light);
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-        }
-
-        .login-section h2 {
-            margin-bottom: 25px;
-            color: var(--dark);
-            font-size: 2rem;
-        }
-
-        .login-form {
-            width: 100%;
-            max-width: 400px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: var(--gray);
-        }
-
-        input {
-            width: 100%;
-            padding: 14px;
-            border: 2px solid var(--light-gray);
-            border-radius: var(--border-radius);
-            font-size: 1rem;
-            transition: var(--transition);
-        }
-
-        input:focus {
-            border-color: var(--primary);
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
-        }
-
-        .btn {
-            display: block;
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: var(--border-radius);
-            background: var(--primary);
-            color: white;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            margin-top: 10px;
-        }
-
-        .btn:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-        }
-
-        .btn-guest {
-            background: var(--secondary);
-        }
-
-        .btn-guest:hover {
-            background: #5e0b9a;
-        }
-
-        .divider {
-            display: flex;
-            align-items: center;
-            margin: 20px 0;
-            color: var(--gray);
-        }
-
-        .divider::before, .divider::after {
-            content: '';
-            flex: 1;
-            border-bottom: 1px solid var(--light-gray);
-        }
-
-        .divider span {
-            padding: 0 15px;
-        }
-
-        .chat-section {
-            display: none;
-            background: white;
-        }
-
-        .chat-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 20px;
-            border-bottom: 1px solid var(--light-gray);
-            margin-bottom: 20px;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--primary);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-
-        .username {
-            font-weight: 600;
-            font-size: 1.2rem;
-        }
-
-        .online-status {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            color: var(--gray);
-            font-size: 0.9rem;
-        }
-
-        .status-indicator {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: var(--success);
-        }
-
-        .logout-btn {
-            background: none;
-            border: none;
-            color: var(--gray);
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: var(--transition);
-            padding: 8px 12px;
-            border-radius: 6px;
-        }
-
-        .logout-btn:hover {
-            background: var(--light-gray);
-            color: var(--danger);
-        }
-
-        .chat-container {
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-            gap: 20px;
-        }
-
-        .online-users {
-            background: var(--light);
-            border-radius: var(--border-radius);
-            padding: 15px;
-            min-height: 60px;
-        }
-
-        .online-title {
-            font-weight: 600;
-            margin-bottom: 10px;
-            color: var(--gray);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .users-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .user-tag {
-            background: var(--primary);
-            color: white;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .user-tag .status {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--success);
-        }
-
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            background: var(--light);
-            border-radius: var(--border-radius);
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .message {
-            max-width: 80%;
-            padding: 15px;
-            border-radius: var(--border-radius);
-            position: relative;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .message-sent {
-            align-self: flex-end;
-            background: var(--primary);
-            color: white;
-            border-bottom-right-radius: 5px;
-        }
-
-        .message-received {
-            align-self: flex-start;
-            background: var(--light-gray);
-            border-bottom-left-radius: 5px;
-        }
-
-        .message-username {
-            font-weight: 600;
-            margin-bottom: 5px;
-            font-size: 0.9rem;
-        }
-
-        .message-text {
-            line-height: 1.4;
-            word-wrap: break-word;
-        }
-
-        .message-time {
-            font-size: 0.7rem;
-            text-align: right;
-            margin-top: 5px;
-            opacity: 0.8;
-        }
-
-        .chat-input {
-            display: flex;
-            gap: 10px;
-        }
-
-        .message-input {
-            flex: 1;
-            padding: 15px;
-            border: 2px solid var(--light-gray);
-            border-radius: var(--border-radius);
-            font-size: 1rem;
-            resize: none;
-            height: 60px;
-        }
-
-        .message-input:focus {
-            border-color: var(--primary);
-            outline: none;
-        }
-
-        .send-btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: var(--border-radius);
-            width: 60px;
-            cursor: pointer;
-            font-size: 1.2rem;
-            transition: var(--transition);
-        }
-
-        .send-btn:hover {
-            background: var(--primary-dark);
-        }
-
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 25px;
-            border-radius: var(--border-radius);
-            background: white;
-            box-shadow: var(--box-shadow);
-            transform: translateX(200%);
-            transition: transform 0.3s ease;
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .notification.show {
-            transform: translateX(0);
-        }
-
-        .notification.error {
-            border-left: 4px solid var(--danger);
-        }
-
-        .notification.success {
-            border-left: 4px solid var(--success);
-        }
-
-        .notification.warning {
-            border-left: 4px solid orange;
-        }
-
-        .char-count {
-            text-align: right;
-            font-size: 0.8rem;
-            color: var(--gray);
-            margin-top: 5px;
-        }
-
-        .char-count.warning {
-            color: orange;
-        }
-
-        .char-count.error {
-            color: var(--danger);
-        }
-
-        @media (max-width: 900px) {
-            .app-container {
-                flex-direction: column;
-            }
-
-            .login-section,
-            .chat-section {
-                padding: 30px;
-            }
-        }
-
-        @media (max-width: 600px) {
-            .message {
-                max-width: 90%;
-            }
-
-            .chat-input {
-                flex-direction: column;
-            }
-
-            .send-btn {
-                width: 100%;
-                padding: 12px;
-            }
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>vunti — Realtime Chat</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #071025;
+      --card: #071524;
+      --muted: #9aa5b1;
+      --accent: #7dd3fc;
+      --glass: rgba(255,255,255,0.03);
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; padding: 0; height: 100%;
+      font-family: Inter, system-ui, sans-serif;
+      background: linear-gradient(180deg, #071025 0%, #071833 100%);
+      color: #e6eef6;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 20px auto;
+      padding: 0 10px;
+      height: calc(100% - 40px);
+    }
+    .card {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      height: 100%;
+      background: var(--card);
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+      overflow: hidden;
+    }
+    .sidebar {
+      padding: 20px;
+      border-right: 1px solid rgba(255,255,255,0.1);
+    }
+    .brand {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: #07232d;
+    }
+    .btn {
+      display: inline-block;
+      padding: 8px 12px;
+      margin-right: 8px;
+      background: var(--glass);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      color: inherit;
+    }
+    .rooms {
+      margin-top: 20px;
+    }
+    .room {
+      padding: 10px;
+      border-radius: 6px;
+      background: var(--glass);
+      margin-bottom: 8px;
+      cursor: pointer;
+    }
+    .room.active {
+      background: var(--accent);
+      color: #07232d;
+    }
+    .main {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    .header {
+      padding: 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .room-name {
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .status {
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .messages {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    .msg {
+      max-width: 70%;
+      margin-bottom: 12px;
+      padding: 10px;
+      border-radius: 8px;
+      background: var(--glass);
+    }
+    .msg.me {
+      margin-left: auto;
+      background: var(--accent);
+      color: #07232d;
+    }
+    .msg .meta {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .composer {
+      display: flex;
+      padding: 14px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    .composer input {
+      flex: 1;
+      padding: 10px;
+      background: var(--glass);
+      border: none;
+      border-radius: 8px;
+      margin-right: 8px;
+      color: inherit;
+    }
+    .composer button {
+      padding: 10px 14px;
+      background: var(--accent);
+      border: none;
+      border-radius: 8px;
+      color: #07232d;
+      cursor: pointer;
+    }
+    .diag {
+      margin-top: 12px;
+      padding: 12px;
+      background: rgba(0,0,0,0.2);
+      font-size: 13px;
+      border-radius: 8px;
+    }
+    .diag pre {
+      height: 100px;
+      overflow: auto;
+      background: rgba(255,255,255,0.05);
+      padding: 8px;
+      border-radius: 6px;
+      margin-top: 8px;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="logo">
-                <i class="fas fa-comments"></i>
-            </div>
-            <h1>Vunti Chat</h1>
-            <p class="subtitle">Real-time messaging with anonymous login and user presence detection</p>
-        </header>
-
-        <div class="app-container">
-            <!-- Login Section -->
-            <div class="login-section" id="loginSection">
-                <h2>Join the Conversation</h2>
-                <div class="login-form">
-                    <div class="form-group">
-                        <label for="username">Choose a username</label>
-                        <input
-                            type="text"
-                            id="username"
-                            placeholder="Enter a unique username"
-                            maxlength="20"
-                        />
-                    </div>
-                    <button class="btn" id="loginBtn">Sign Up / Log In</button>
-
-                    <div class="divider"><span>or</span></div>
-
-                    <button class="btn btn-guest" id="guestBtn">Join as Guest</button>
-                </div>
-            </div>
-
-            <!-- Chat Section -->
-            <div class="chat-section" id="chatSection">
-                <div class="chat-header">
-                    <div class="user-info">
-                        <div class="avatar" id="userAvatar">U</div>
-                        <div>
-                            <div class="username" id="displayUsername">Username</div>
-                            <div class="online-status">
-                                <div class="status-indicator"></div>
-                                <span>Online</span>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="logout-btn" id="logoutBtn">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </button>
-                </div>
-
-                <div class="chat-container">
-                    <div class="online-users">
-                        <div class="online-title">
-                            <i class="fas fa-users"></i> Online Now (<span id="onlineCount">0</span>)
-                        </div>
-                        <div class="users-list" id="usersList">
-                            <!-- Online users will be displayed here -->
-                        </div>
-                    </div>
-
-                    <div class="chat-messages" id="chatMessages">
-                        <!-- Messages will be displayed here -->
-                        <div class="message message-received">
-                            <div class="message-username">System</div>
-                            <div class="message-text">
-                                Welcome to Vunti Chat! Send your first message to get started.
-                            </div>
-                            <div class="message-time">Just now</div>
-                        </div>
-                    </div>
-
-                    <div class="chat-input">
-                        <div style="flex: 1">
-                            <textarea
-                                class="message-input"
-                                id="messageInput"
-                                placeholder="Type your message here..."
-                                maxlength="500"
-                            ></textarea>
-                            <div class="char-count" id="charCount">0/500</div>
-                        </div>
-                        <button class="send-btn" id="sendBtn">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
+  <div class="container">
+    <div class="card">
+      <div class="sidebar">
+        <div class="brand">vunti</div>
+        <div class="profile">
+          <div class="avatar" id="avatar">G</div>
+          <div>
+            <div id="username">Guest</div>
+            <div class="small" id="user-id">Not signed in</div>
+          </div>
         </div>
-
-        <!-- Notification -->
-        <div class="notification" id="notification">
-            <i class="fas fa-info-circle"></i>
-            <span id="notificationText">This is a notification</span>
+        <button class="btn" id="btn-magic">Magic Link</button>
+        <button class="btn" id="btn-signout">Sign out</button>
+        <div class="rooms">
+          <div class="room active" data-room="general"># general</div>
+          <div class="room" data-room="random"># random</div>
         </div>
+        <div class="diag">
+          <div><strong>Diagnostics</strong></div>
+          <button class="btn" id="run-diag">Run diagnostics</button>
+          <pre id="diag-log">Diagnostics not run yet.</pre>
+        </div>
+      </div>
+      <div class="main">
+        <div class="header">
+          <div class="room-name" id="room-title"># general</div>
+          <div class="status" id="status">Connecting…</div>
+        </div>
+        <div class="messages" id="messages"></div>
+        <div class="composer">
+          <input id="input" placeholder="Say something nice..." />
+          <button id="send">Send</button>
+        </div>
+      </div>
     </div>
+  </div>
+  <script type="module">
+    const SUPABASE_URL = 'https://fflawatbcocazbsblzkl.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmbGF3YXRiY29jYXpic2JsemtsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ1OTQzMDcsImV4cCI6MjA3MDE3MDMwN30.4bCY4AcHHsWsXJCvcVhoVXABdn7UV3S7pxIuX4jMoww';
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    <script>
-        // Supabase configuration
-        const SUPABASE_URL = 'https://fflawatbcocazbsblzkl.supabase.co';
-        const SUPABASE_KEY =
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmbGF3YXRiY29jYXpic2JsemtsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ1OTQzMDcsImV4cCI6MjA3MDE3MDMwN30.4bCY4AcHHsWsXJCvcVhoVXABdn7UV3S7pxIuX4jMoww';
+    const messagesEl = document.getElementById('messages');
+    const inputEl = document.getElementById('input');
+    const sendBtn = document.getElementById('send');
+    const roomEls = document.querySelectorAll('.room');
+    const roomTitleEl = document.getElementById('room-title');
+    const statusEl = document.getElementById('status');
+    const usernameEl = document.getElementById('username');
+    const userIdEl = document.getElementById('user-id');
+    const avatarEl = document.getElementById('avatar');
+    const diagLog = document.getElementById('diag-log');
 
-        // Initialize Supabase client
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    let session = null;
+    let currentRoom = 'general';
+    let channel = null;
 
-        // DOM elements
-        const loginSection = document.getElementById('loginSection');
-        const chatSection = document.getElementById('chatSection');
-        const loginBtn = document.getElementById('loginBtn');
-        const guestBtn = document.getElementById('guestBtn');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const usernameInput = document.getElementById('username');
-        const messageInput = document.getElementById('messageInput');
-        const sendBtn = document.getElementById('sendBtn');
-        const chatMessages = document.getElementById('chatMessages');
-        const notification = document.getElementById('notification');
-        const notificationText = document.getElementById('notificationText');
-        const displayUsername = document.getElementById('displayUsername');
-        const userAvatar = document.getElementById('userAvatar');
-        const usersList = document.getElementById('usersList');
-        const onlineCount = document.getElementById('onlineCount');
-        const charCount = document.getElementById('charCount');
+    function logDiag(msg) {
+      diagLog.textContent = `${new Date().toLocaleTimeString()} — ${msg}\n` + diagLog.textContent;
+    }
 
-        // Current user state
-        let currentUser = {
-            id: null,
-            username: null,
-            isGuest: false,
-        };
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"]/g, c =>
+        ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])
+      );
+    }
 
-        // Show notification helper
-        function showNotification(message, type = 'info') {
-            notificationText.textContent = message;
-            notification.className = 'notification show';
-            if (type === 'error') notification.classList.add('error');
-            else if (type === 'success') notification.classList.add('success');
-            else if (type === 'warning') notification.classList.add('warning');
+    function renderMessage(m) {
+      const mine = session?.user?.id === m.user_id;
+      const div = document.createElement('div');
+      div.className = 'msg' + (mine ? ' me' : '');
+      const meta = `<div class="meta">${escapeHtml(m.username || 'anon')} • ${new Date(m.inserted_at).toLocaleTimeString()}</div>`;
+      div.innerHTML = meta + `<div>${escapeHtml(m.content)}</div>`;
+      messagesEl.appendChild(div);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
 
-            setTimeout(() => {
-                notification.className = 'notification';
-            }, 3000);
+    async function loadMessages() {
+      statusEl.textContent = 'Loading…';
+      messagesEl.innerHTML = '';
+      try {
+        const { data, error } = await supabase
+          .from('messages')
+          .select('*')
+          .eq('room', currentRoom)
+          .order('inserted_at', { ascending: true })
+          .limit(200);
+
+        if (error) {
+          console.error('SDK error:', error);
+          logDiag('SDK error: ' + error.message);
+          fallbackRest();
+          return;
         }
 
-        // Update character count in message input
-        function updateCharCount() {
-            const length = messageInput.value.length;
-            charCount.textContent = `${length}/500`;
+        data.forEach(renderMessage);
+        statusEl.textContent = 'Synced';
+        logDiag(`Loaded ${data.length} messages (SDK)`);
+      } catch (e) {
+        console.error('Fetch error:', e);
+        logDiag('Fetch exception: ' + e.message);
+        fallbackRest();
+      }
+    }
 
-            charCount.classList.remove('warning', 'error');
-            if (length > 450 && length < 500) charCount.classList.add('warning');
-            else if (length === 500) charCount.classList.add('error');
-        }
-
-        // Show chat section & hide login
-        function showChatSection() {
-            loginSection.style.display = 'none';
-            chatSection.style.display = 'flex';
-            displayUsername.textContent = currentUser.username;
-            userAvatar.textContent = currentUser.username.charAt(0).toUpperCase();
-            messageInput.focus();
-        }
-
-        // Show login section & hide chat
-        function showLoginSection() {
-            loginSection.style
-            display = 'flex';
-            chatSection.style.display = 'none';
-            currentUser = { id: null, username: null, isGuest: false };
-            usersList.innerHTML = '';
-            chatMessages.innerHTML = '';
-            usernameInput.value = '';
-            messageInput.value = '';
-            updateCharCount();
-        }
-
-        // Sanitize string to avoid XSS
-        function sanitize(str) {
-            const temp = document.createElement('div');
-            temp.textContent = str;
-            return temp.innerHTML;
-        }
-
-        // Fetch and display messages
-        async function loadMessages() {
-            let { data, error } = await supabase
-                .from('messages')
-                .select('*')
-                .order('created_at', { ascending: true })
-                .limit(100);
-
-            if (error) {
-                showNotification('Error loading messages', 'error');
-                return;
-            }
-
-            chatMessages.innerHTML = '';
-
-            data.forEach((msg) => {
-                addMessageToChat(msg);
-            });
-
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        // Add single message to chat
-        function addMessageToChat(msg) {
-            const messageEl = document.createElement('div');
-            messageEl.classList.add('message');
-            if (msg.user_id === currentUser.id) {
-                messageEl.classList.add('message-sent');
-            } else {
-                messageEl.classList.add('message-received');
-            }
-
-            messageEl.innerHTML = `
-                <div class="message-username">${sanitize(msg.username)}</div>
-                <div class="message-text">${sanitize(msg.content)}</div>
-                <div class="message-time">${new Date(msg.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
-            `;
-
-            chatMessages.appendChild(messageEl);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        // Send a new message
-        async function sendMessage() {
-            const content = messageInput.value.trim();
-            if (!content) return;
-
-            if (content.length > 500) {
-                showNotification('Message is too long (max 500 characters)', 'error');
-                return;
-            }
-
-            const message = {
-                user_id: currentUser.id,
-                username: currentUser.username,
-                content: content,
-                created_at: new Date().toISOString(),
-            };
-
-            const { data, error } = await supabase.from('messages').insert([message]);
-
-            if (error) {
-                showNotification('Failed to send message', 'error');
-                return;
-            }
-
-            messageInput.value = '';
-            updateCharCount();
-            // Message will appear via real-time subscription
-        }
-
-        // Subscribe to messages in real-time
-        function subscribeToMessages() {
-            supabase
-                .channel('public:messages')
-                .on(
-                    'postgres_changes',
-                    { event: '*', schema: 'public', table: 'messages' },
-                    (payload) => {
-                        addMessageToChat(payload.new);
-                    }
-                )
-                .subscribe();
-        }
-
-        // Update online users UI
-        function updateOnlineUsers(users) {
-            usersList.innerHTML = '';
-            onlineCount.textContent = users.length;
-
-            users.forEach((user) => {
-                const userTag = document.createElement('div');
-                userTag.classList.add('user-tag');
-                userTag.innerHTML = `
-                    <div class="status"></div> ${sanitize(user.username)}
-                `;
-                usersList.appendChild(userTag);
-            });
-        }
-
-        // Presence tracking
-        let presenceChannel = null;
-
-        async function setupPresence() {
-            if (presenceChannel) {
-                await supabase.removeChannel(presenceChannel);
-            }
-
-            presenceChannel = supabase.channel('presence-users');
-
-            presenceChannel.on('presence', { event: 'sync' }, () => {
-                const state = presenceChannel.presenceState();
-                const users = Object.values(state).map((u) => u[0]);
-                updateOnlineUsers(users);
-            });
-
-            presenceChannel.on('presence', { event: 'join' }, (e) => {
-                const users = Object.values(presenceChannel.presenceState()).map((u) => u[0]);
-                updateOnlineUsers(users);
-            });
-
-            presenceChannel.on('presence', { event: 'leave' }, (e) => {
-                const users = Object.values(presenceChannel.presenceState()).map((u) => u[0]);
-                updateOnlineUsers(users);
-            });
-
-            await presenceChannel.subscribe();
-
-            // Track current user presence
-            await presenceChannel.track({
-                user_id: currentUser.id,
-                username: currentUser.username,
-            });
-        }
-
-        // Check if username exists
-        async function isUsernameTaken(username) {
-            const { data, error } = await supabase
-                .from('users')
-                .select('username')
-                .eq('username', username)
-                .single();
-
-            return !!data;
-        }
-
-        // Create or fetch user
-        async function createOrFetchUser(username) {
-            // Check if user exists
-            const { data, error } = await supabase
-                .from('users')
-                .select('*')
-                .eq('username', username)
-                .single();
-
-            if (data) {
-                return data;
-            } else {
-                // Create new user
-                const { data: newUser, error: insertError } = await supabase
-                    .from('users')
-                    .insert([{ username }])
-                    .select()
-                    .single();
-
-                if (insertError) {
-                    showNotification('Error creating user', 'error');
-                    return null;
-                }
-                return newUser;
-            }
-        }
-
-        // Handle login with username
-        async function handleLogin() {
-            const username = usernameInput.value.trim();
-            if (!username) {
-                showNotification('Please enter a username', 'warning');
-                return;
-            }
-
-            if (username.length < 3) {
-                showNotification('Username must be at least 3 characters', 'warning');
-                return;
-            }
-
-            if (!/^[a-zA-Z0-9_]+$/.test(username)) {
-                showNotification('Username can only contain letters, numbers, and underscores', 'warning');
-                return;
-            }
-
-            const taken = await isUsernameTaken(username);
-            if (taken) {
-                showNotification('Username is already taken. Please choose another.', 'error');
-                return;
-            }
-
-            const user = await createOrFetchUser(username);
-            if (!user) return;
-
-            currentUser.id = user.id;
-            currentUser.username = user.username;
-            currentUser.isGuest = false;
-
-            showChatSection();
-            loadMessages();
-            subscribeToMessages();
-            setupPresence();
-
-            showNotification(`Welcome, ${currentUser.username}!`, 'success');
-        }
-
-        // Handle guest login
-        async function handleGuestLogin() {
-            // Generate random username
-            const guestName = 'Guest' + Math.floor(Math.random() * 10000);
-
-            currentUser.id = guestName;
-            currentUser.username = guestName;
-            currentUser.isGuest = true;
-
-            showChatSection();
-            loadMessages();
-            subscribeToMessages();
-            setupPresence();
-
-            showNotification(`Joined as ${guestName}`, 'success');
-        }
-
-        // Logout user
-        async function handleLogout() {
-            // Untrack presence
-            if (presenceChannel) {
-                await presenceChannel.untrack({
-                    user_id: currentUser.id,
-                    username: currentUser.username,
-                });
-                await supabase.removeChannel(presenceChannel);
-                presenceChannel = null;
-            }
-
-            showLoginSection();
-            showNotification('Logged out', 'success');
-        }
-
-        // Event listeners
-        loginBtn.addEventListener('click', handleLogin);
-        guestBtn.addEventListener('click', handleGuestLogin);
-        logoutBtn.addEventListener('click', handleLogout);
-
-        sendBtn.addEventListener('click', sendMessage);
-        messageInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
+    async function fallbackRest() {
+      logDiag('Falling back to REST fetch');
+      const url = `${SUPABASE_URL}/rest/v1/messages?select=*&room=eq.${encodeURIComponent(currentRoom)}&limit=200`;
+      try {
+        const resp = await fetch(url, {
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          }
         });
+        logDiag(`REST status: ${resp.status}`);
+        const json = await resp.json();
+        messagesEl.innerHTML = '';
+        json.forEach(renderMessage);
+        statusEl.textContent = resp.ok ? 'Synced (REST)' : 'Error';
+      } catch (e) {
+        console.error('REST error:', e);
+        logDiag('REST exception: ' + e.message);
+        statusEl.textContent = 'Error';
+      }
+    }
 
-        messageInput.addEventListener('input', updateCharCount);
+    function setupRealtime() {
+      if (channel) channel.unsubscribe();
+      channel = supabase
+        .channel('public:messages')
+        .on('postgres_changes', { schema: 'public', table: 'messages', event: 'INSERT' }, payload => {
+          if (payload.new.room === currentRoom) renderMessage(payload.new);
+        })
+        .subscribe();
+    }
 
-        // On page load
-        updateCharCount();
-    </script>
+    async function sendMessage() {
+      const content = inputEl.value.trim();
+      if (!content) return;
+      try {
+        await supabase.from('messages').insert([{ room: currentRoom, content, username: session?.user?.email || 'Guest', user_id: session?.user?.id || null }]);
+        inputEl.value = '';
+      } catch (e) {
+        console.error('Send error:', e);
+        logDiag('Send error: ' + e.message);
+        alert('Send failed, check diagnostics.');
+      }
+    }
+
+    async function runDiagnostics() {
+      logDiag('Starting diagnostics');
+      await loadMessages();
+      setupRealtime();
+      logDiag('Diagnostics done');
+    }
+
+    supabase.auth.onAuthStateChange((_, s) => {
+      session = s;
+      if (session) {
+        const u = session.user;
+        usernameEl.textContent = u.user_metadata.full_name || u.email;
+        userIdEl.textContent = u.id;
+        avatarEl.textContent = usernameEl.textContent[0].toUpperCase();
+      } else {
+        usernameEl.textContent = 'Guest';
+        userIdEl.textContent = 'Not signed in';
+        avatarEl.textContent = 'G';
+      }
+      loadMessages();
+    });
+
+    async function init() {
+      const { data } = await supabase.auth.getSession();
+      session = data.session;
+      supabase.auth.onAuthStateChange((_, s) => session = s);
+      setupRealtime();
+      loadMessages();
+    }
+
+    sendBtn.onclick = sendMessage;
+    document.getElementById('run-diag').onclick = runDiagnostics;
+    roomEls.forEach(r => r.onclick = async () => {
+      roomEls.forEach(x => x.classList.remove('active'));
+      r.classList.add('active');
+      currentRoom = r.dataset.room;
+      roomTitleEl.textContent = `# ${currentRoom}`;
+      await loadMessages();
+    });
+    document.getElementById('btn-magic').onclick = async () => {
+      const email = prompt('Enter your email for a magic link:');
+      if (!email) return;
+      const { error } = await supabase.auth.signInWithOtp({ email });
+      if (error) alert('Error: ' + error.message);
+    };
+    document.getElementById('btn-signout').onclick = async () => {
+      await supabase.auth.signOut();
+      alert('Signed out');
+      loadMessages();
+    };
+
+    // Start
+    init();
+  </script>
 </body>
 </html>
