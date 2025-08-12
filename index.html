@@ -3,321 +3,281 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Vunti Chat</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet" />
+  <title>Vunti Chat App</title>
   <style>
     body {
-      margin: 0; padding: 0; background: #071025; color: #e6eef6; font-family: 'Inter', sans-serif;
-      display: flex; justify-content: center; align-items: center; height: 100vh;
-    }
-    #app {
-      width: 100%; max-width: 900px; height: 90vh; background: #071524;
-      border-radius: 12px; box-shadow: 0 0 40px rgba(0,0,0,0.7);
-      display: grid; grid-template-columns: 280px 1fr;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #1e1e2f;
+      color: #eee;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
       overflow: hidden;
     }
-    .sidebar {
-      padding: 20px; border-right: 1px solid rgba(255,255,255,0.1);
-      display: flex; flex-direction: column;
-    }
-    .brand {
-      font-size: 28px; font-weight: 700; color: #7dd3fc; margin-bottom: 20px;
-    }
-    .profile {
-      display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
-    }
-    .avatar {
-      width: 48px; height: 48px; border-radius: 50%; background: #7dd3fc;
-      display: flex; align-items: center; justify-content: center;
-      color: #07232d; font-weight: 700; font-size: 24px;
-    }
-    .profile-info {
-      flex-grow: 1;
-    }
-    .profile-info > div:first-child {
-      font-weight: 600; font-size: 18px;
-    }
-    .profile-info > div:last-child {
-      font-size: 12px; color: #9aa5b1;
-    }
-    button {
-      background: #7dd3fc; color: #07232d; border: none; border-radius: 8px;
-      padding: 10px 14px; margin-top: 8px; cursor: pointer;
-      font-weight: 600; transition: background 0.3s ease;
-    }
-    button:hover {
-      background: #58b5dc;
-    }
-    .rooms {
-      margin-top: 24px;
-      display: flex; flex-direction: column; gap: 8px;
-      flex-grow: 1;
-    }
-    .room {
-      padding: 10px; background: rgba(255,255,255,0.05);
-      border-radius: 8px; cursor: pointer; font-weight: 600;
-      transition: background 0.3s ease;
+    header {
+      background: #27293d;
+      padding: 1rem 2rem;
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-align: center;
+      color: #61dafb;
       user-select: none;
     }
-    .room.active {
-      background: #7dd3fc; color: #07232d;
+    #chat-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      max-width: 600px;
+      margin: auto;
+      width: 100%;
+      border: 1px solid #444;
+      border-radius: 8px;
+      background: #2c2f48;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
     }
-    .main {
-      display: flex; flex-direction: column; height: 100%;
-    }
-    .header {
-      padding: 16px 24px; border-bottom: 1px solid rgba(255,255,255,0.1);
-      display: flex; align-items: center; justify-content: space-between;
-      font-weight: 600; font-size: 20px; color: #7dd3fc;
-    }
-    .messages {
-      flex-grow: 1; padding: 20px; overflow-y: auto;
-      display: flex; flex-direction: column; gap: 12px;
-      background: #071025;
+    #messages {
+      flex: 1;
+      padding: 1rem;
+      overflow-y: auto;
+      scroll-behavior: smooth;
     }
     .message {
-      max-width: 70%; padding: 14px; border-radius: 12px;
-      background: rgba(125, 211, 252, 0.15);
-      color: #d0e6fc;
-      font-size: 14px;
-      line-height: 1.4;
-      user-select: text;
-      white-space: pre-wrap;
+      margin-bottom: 1rem;
+      padding: 0.5rem 1rem;
+      border-radius: 12px;
+      max-width: 70%;
       word-wrap: break-word;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
     }
-    .message.me {
-      background: #7dd3fc;
-      color: #07232d;
-      margin-left: auto;
+    .message.self {
+      background-color: #61dafb;
+      color: #1e1e2f;
+      align-self: flex-end;
     }
-    .meta {
-      font-size: 12px; color: #9aa5b1; margin-bottom: 4px;
+    .message.other {
+      background-color: #444a6e;
+      color: #eee;
+      align-self: flex-start;
     }
-    .composer {
-      display: flex; border-top: 1px solid rgba(255,255,255,0.1);
-      padding: 12px 20px;
-      background: #071524;
+    #input-container {
+      display: flex;
+      padding: 1rem;
+      border-top: 1px solid #444;
+      background: #27293d;
     }
-    .composer input {
-      flex-grow: 1;
-      padding: 12px 16px;
+    #message-input {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      border-radius: 20px;
       border: none;
-      border-radius: 10px;
-      font-size: 16px;
       outline: none;
-      color: #e6eef6;
-      background: rgba(255,255,255,0.05);
-      margin-right: 12px;
+      background: #1e1e2f;
+      color: #eee;
+      box-shadow: inset 0 0 5px #000;
     }
-    .composer button {
-      background: #7dd3fc;
+    #send-btn {
+      margin-left: 1rem;
+      padding: 0 1.5rem;
       border: none;
-      padding: 0 20px;
-      border-radius: 10px;
-      font-weight: 600;
-      color: #07232d;
+      border-radius: 20px;
+      background: #61dafb;
+      color: #1e1e2f;
+      font-weight: bold;
       cursor: pointer;
       transition: background 0.3s ease;
     }
-    .composer button:hover {
-      background: #58b5dc;
+    #send-btn:hover {
+      background: #21a1f1;
+    }
+    #sign-in-container {
+      text-align: center;
+      padding: 2rem;
+    }
+    #email-input {
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      width: 60%;
+      max-width: 300px;
+      border-radius: 20px;
+      border: none;
+      outline: none;
+      background: #1e1e2f;
+      color: #eee;
+      box-shadow: inset 0 0 5px #000;
+    }
+    #sign-in-btn {
+      margin-left: 1rem;
+      padding: 0 1.5rem;
+      border: none;
+      border-radius: 20px;
+      background: #61dafb;
+      color: #1e1e2f;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    #sign-in-btn:hover {
+      background: #21a1f1;
+    }
+    footer {
+      text-align: center;
+      padding: 0.5rem;
+      font-size: 0.9rem;
+      color: #666;
+      user-select: none;
     }
   </style>
 </head>
 <body>
-  <div id="app" role="main">
-    <div class="sidebar" role="complementary" aria-label="Sidebar">
-      <div class="brand">Vunti</div>
-      <div class="profile">
-        <div class="avatar" id="avatar">G</div>
-        <div class="profile-info">
-          <div id="username">Guest</div>
-          <div id="userid" style="font-size: 12px; color: #9aa5b1;">Not signed in</div>
-        </div>
-      </div>
-      <button id="btn-magic">Send Magic Link</button>
-      <button id="btn-signout">Sign Out</button>
-      <div class="rooms" role="navigation" aria-label="Chat Rooms">
-        <div class="room active" data-room="general"># general</div>
-        <div class="room" data-room="random"># random</div>
+  <header>Vunti Chat App</header>
+
+  <main id="app">
+    <div id="sign-in-container" style="display:none;">
+      <input type="email" id="email-input" placeholder="Enter your email" />
+      <button id="sign-in-btn">Send Magic Link</button>
+      <p id="sign-in-message" style="color:#4caf50;"></p>
+    </div>
+
+    <div id="chat-container" style="display:none;">
+      <div id="messages"></div>
+      <div id="input-container">
+        <input type="text" id="message-input" placeholder="Type your message..." autocomplete="off" />
+        <button id="send-btn">Send</button>
       </div>
     </div>
-    <section class="main" role="main">
-      <header class="header" aria-live="polite">
-        <div id="room-title"># general</div>
-        <div id="status" style="font-weight: normal; font-size: 14px; color: #9aa5b1;">Connecting…</div>
-      </header>
-      <div class="messages" id="messages" aria-live="polite" role="log"></div>
-      <form class="composer" id="form" aria-label="Send message">
-        <input id="input" type="text" placeholder="Type your message here…" autocomplete="off" aria-required="true" />
-        <button type="submit" id="send">Send</button>
-      </form>
-    </section>
-  </div>
+  </main>
 
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+  <footer>Powered by Supabase • Made with ❤️ by Prabhat</footer>
 
-    const SUPABASE_URL = 'https://fflawatbcocazbsblzkl.supabase.co';
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
+  <script>
+    const EDGE_FUNCTION_URL = 'https://fflawatbcocazbsblzkl.supabase.co/functions/v1/cors-config';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmbGF3YXRiY29jYXpic2JsemtsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ1OTQzMDcsImV4cCI6MjA3MDE3MDMwN30.4bCY4AcHHsWsXJCvcVhoVXABdn7UV3S7pxIuX4jMoww';
 
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const supabase = supabase.createClient(EDGE_FUNCTION_URL, SUPABASE_ANON_KEY);
 
-    const avatarEl = document.getElementById('avatar');
-    const usernameEl = document.getElementById('username');
-    const useridEl = document.getElementById('userid');
-    const statusEl = document.getElementById('status');
-    const roomTitleEl = document.getElementById('room-title');
-    const messagesEl = document.getElementById('messages');
-    const inputEl = document.getElementById('input');
-    const form = document.getElementById('form');
-    const rooms = document.querySelectorAll('.room');
-    const btnMagic = document.getElementById('btn-magic');
-    const btnSignout = document.getElementById('btn-signout');
+    const signInContainer = document.getElementById('sign-in-container');
+    const chatContainer = document.getElementById('chat-container');
+    const emailInput = document.getElementById('email-input');
+    const signInBtn = document.getElementById('sign-in-btn');
+    const signInMessage = document.getElementById('sign-in-message');
+    const messagesDiv = document.getElementById('messages');
+    const messageInput = document.getElementById('message-input');
+    const sendBtn = document.getElementById('send-btn');
 
-    let session = null;
-    let currentRoom = 'general';
-    let channel = null;
+    let currentUser = null;
 
-    function escapeHtml(text) {
-      return text.replace(/[&<>"']/g, function(m) {
-        return {
-          '&': '&amp;',
-          '<': '&lt;',
-          '>': '&gt;',
-          '"': '&quot;',
-          "'": '&#39;'
-        }[m];
-      });
+    // Show sign-in or chat UI based on auth state
+    async function checkUser() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session && session.user) {
+        currentUser = session.user;
+        signInContainer.style.display = 'none';
+        chatContainer.style.display = 'flex';
+        startListeningMessages();
+        loadMessages();
+      } else {
+        signInContainer.style.display = 'block';
+        chatContainer.style.display = 'none';
+      }
     }
 
-    function renderMessage(message) {
-      const isMe = session?.user?.id === message.user_id;
-      const div = document.createElement('div');
-      div.className = 'message' + (isMe ? ' me' : '');
-      div.innerHTML = `
-        <div class="meta">${escapeHtml(message.username || 'anon')} • ${new Date(message.inserted_at).toLocaleTimeString()}</div>
-        <div class="content">${escapeHtml(message.content)}</div>
-      `;
-      messagesEl.appendChild(div);
-      messagesEl.scrollTop = messagesEl.scrollHeight;
-    }
+    // Send magic link email
+    signInBtn.addEventListener('click', async () => {
+      const email = emailInput.value.trim();
+      if (!email) {
+        alert('Please enter a valid email.');
+        return;
+      }
+      const { error } = await supabase.auth.signInWithOtp({ email });
+      if (error) {
+        alert('Error sending magic link: ' + error.message);
+      } else {
+        signInMessage.textContent = 'Magic link sent! Check your email.';
+      }
+    });
 
+    // Load last 50 messages
     async function loadMessages() {
-      statusEl.textContent = 'Loading messages…';
-      messagesEl.innerHTML = '';
       try {
         const { data, error } = await supabase
           .from('messages')
           .select('*')
-          .eq('channel', currentRoom)
-          .order('inserted_at', { ascending: true })
-          .limit(200);
-
+          .order('created_at', { ascending: true })
+          .limit(50);
         if (error) throw error;
-        data.forEach(renderMessage);
-        statusEl.textContent = 'Synced';
+
+        messagesDiv.innerHTML = '';
+        data.forEach(msg => {
+          appendMessage(msg);
+        });
+        scrollToBottom();
       } catch (error) {
-        console.error('Error loading messages:', error);
-        statusEl.textContent = 'Error loading messages';
+        console.error('Error loading messages:', error.message);
       }
     }
 
-    function subscribeMessages() {
-      if (channel) channel.unsubscribe();
-      channel = supabase
+    // Append a message to chat UI
+    function appendMessage(msg) {
+      const div = document.createElement('div');
+      div.classList.add('message');
+      div.classList.add(msg.user_id === currentUser.id ? 'self' : 'other');
+      div.textContent = `${msg.user_email || 'Anonymous'}: ${msg.content}`;
+      messagesDiv.appendChild(div);
+    }
+
+    // Scroll chat to bottom
+    function scrollToBottom() {
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    // Listen for realtime messages
+    function startListeningMessages() {
+      supabase
         .channel('public:messages')
         .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
-          if (payload.new.channel === currentRoom) {
-            renderMessage(payload.new);
-          }
+          appendMessage(payload.new);
+          scrollToBottom();
         })
         .subscribe();
     }
 
-    async function sendMessage(content) {
-      if (!content.trim()) return;
+    // Send a message
+    sendBtn.addEventListener('click', async () => {
+      const content = messageInput.value.trim();
+      if (!content) return;
       try {
-        await supabase
-          .from('messages')
-          .insert([
-            {
-              channel: currentRoom,
-              content,
-              username: session?.user?.email || 'Guest',
-              user_id: session?.user?.id || null,
-            }
-          ]);
+        const { error } = await supabase.from('messages').insert([
+          {
+            content,
+            user_id: currentUser.id,
+            user_email: currentUser.email,
+          },
+        ]);
+        if (error) throw error;
+        messageInput.value = '';
       } catch (error) {
-        console.error('Error sending message:', error);
-        alert('Failed to send message.');
+        alert('Error sending message: ' + error.message);
       }
-    }
-
-    form.addEventListener('submit', async e => {
-      e.preventDefault();
-      const val = inputEl.value;
-      if (!val.trim()) return;
-      await sendMessage(val);
-      inputEl.value = '';
     });
 
-    rooms.forEach(roomEl => {
-      roomEl.addEventListener('click', async () => {
-        rooms.forEach(r => r.classList.remove('active'));
-        roomEl.classList.add('active');
-        currentRoom = roomEl.dataset.room;
-        roomTitleEl.textContent = `# ${currentRoom}`;
-        messagesEl.innerHTML = '';
-        await loadMessages();
-      });
-    });
-
-    btnMagic.addEventListener('click', async () => {
-      const email = prompt('Enter your email for a magic link sign-in:');
-      if (!email) return;
-      const { error } = await supabase.auth.signInWithOtp({ email });
-      if (error) alert('Error sending magic link: ' + error.message);
-      else alert('Check your email for the magic link!');
-    });
-
-    btnSignout.addEventListener('click', async () => {
-      await supabase.auth.signOut();
-      session = null;
-      usernameEl.textContent = 'Guest';
-      useridEl.textContent = 'Not signed in';
-      avatarEl.textContent = 'G';
-      await loadMessages();
-    });
-
-    supabase.auth.onAuthStateChange((_event, newSession) => {
-      session = newSession;
-      if (session) {
-        const user = session.user;
-        usernameEl.textContent = user.user_metadata?.full_name || user.email || 'User';
-        useridEl.textContent = user.id;
-        avatarEl.textContent = usernameEl.textContent[0].toUpperCase();
-      } else {
-        usernameEl.textContent = 'Guest';
-        useridEl.textContent = 'Not signed in';
-        avatarEl.textContent = 'G';
+    // Also send on Enter key
+    messageInput.addEventListener('keypress', e => {
+      if (e.key === 'Enter') {
+        sendBtn.click();
       }
-      loadMessages();
     });
 
-    // Initial load
-    (async () => {
-      const { data } = await supabase.auth.getSession();
-      session = data.session;
-      if (session) {
-        const user = session.user;
-        usernameEl.textContent = user.user_metadata?.full_name || user.email || 'User';
-        useridEl.textContent = user.id;
-        avatarEl.textContent = usernameEl.textContent[0].toUpperCase();
-      }
-      subscribeMessages();
-      loadMessages();
-    })();
+    // Initial check for user session
+    checkUser();
+
+    // Listen to auth state changes
+    supabase.auth.onAuthStateChange((event, session) => {
+      checkUser();
+    });
   </script>
 </body>
 </html>
