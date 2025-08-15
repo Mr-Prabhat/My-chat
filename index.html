@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Abishma Care — Pink Floral Alarm & Player</title>
+<style>
+  :root{
+    --pink-1:#ffe6ef;
+    --pink-2:#ffd1e1;
+    --pink-3:#ffb3cf;
+    --pink-4:#ff8fb8;
+    --pink-5:#ff6aa3;
+    --rose:#ff7bac;
+    --text:#5a2d3a;
+    --card:#ffffffd8;
+    --shadow: 0 10px 30px rgba(255, 105, 180, 0.25);
+    --round: 18px;
+  }
+
+  html, body {
+    height: 100%;
+    margin: 0;
+    font-family: ui-rounded, "Poppins", "Nunito", "Segoe UI", system-ui, -apple-system, sans-serif;
+    color: var(--text);
+    background: linear-gradient(135deg, #ffd6e8 0%, #ffe6f2 40%, #fff1f7 100%);
+    overflow-x: hidden;
+  }
+
+  /* soft floral overlay using repeating radial gradients (no images) */
+  body::before{
+    content:"";
+    position: fixed; inset:0;
+    background:
+      radial-gradient(30px 30px at 10% 15%, rgba(255,182,193,.25) 30%, transparent 31%) repeat,
+      radial-gradient(24px 24px at 80% 25%, rgba(255,153,204,.18) 30%, transparent 31%) repeat,
+      radial-gradient(20px 20px at 30% 80%, rgba(255,192,203,.2) 30%, transparent 31%) repeat;
+    pointer-events:none;
+    opacity:.6;
+    background-size: 220px 220px, 260px 260px, 180px 180px;
+  }
+
+  header{
+    text-align:center;
+    padding: 24px 16px 10px;
+  }
+  .title{
+    font-size: clamp(28px, 4vw, 44px);
+    letter-spacing:.5px;
+    color:#b0175e;
+    text-shadow: 0 2px 0 #fff, 0 10px 30px rgba(255, 64, 129, .25);
+  }
+  .subtitle{
+    margin-top:6px;
+    color:#7a3a4a;
+    opacity:.85;
+  }
+
+  .container{
+    width:min(1100px, 92vw);
+    margin: 10px auto 60px;
+    display:grid;
+    grid-template-columns: 1.1fr .9fr;
+    gap: 22px;
+  }
+  @media (max-width: 980px){
+    .container{ grid-template-columns: 1fr; }
+  }
+
+  .card{
+    background: var(--card);
+    border: 1px solid #ffd6e9;
+    border-radius: var(--round);
+    box-shadow: var(--shadow);
+    padding: 18px;
+    backdrop-filter: blur(6px);
+  }
+  .card h2{
+    margin: 4px 0 14px;
+    font-size: clamp(18px, 2.4vw, 24px);
+    color: #a0165a;
+    display:flex; align-items:center; gap:8px;
+  }
+
+  .clock{
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+    padding: 14px 16px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #fff6fa, #ffe9f3);
+    border: 1px solid #ffd3e7;
+  }
+  .time{
+    font-size: clamp(32px, 7.2vw, 64px);
+    font-weight: 800;
+    letter-spacing: 1px;
+  }
+  .date{
+    font-size: 14px;
+    opacity:.8;
+  }
+
+  .row{ display:flex; flex-wrap:wrap; gap:12px; align-items:center }
+  .input, select, button{
+    font: inherit;
+  }
+
+  .field{
+    display:flex; flex-direction:column; gap:6px;
+    min-width: 160px;
+  }
+  .field label{ font-size: 13px; opacity:.8 }
+  .field input[type="time"],
+  .field input[type="text"],
+  .field select{
+    background:#fff;
+    border:1px solid #ffc3dd;
+    border-radius: 12px;
+    padding: 10px 12px;
+    outline:none;
+    transition:.2s ease;
+  }
+  .field input[type="time"]:focus,
+  .field input[type="text"]:focus,
+  .field select:focus{
+    box-shadow: 0 0 0 3px rgba(255, 105, 180, .15);
+    border-color:#ffa6cd;
+  }
+
+  .chip{
+    padding: 10px 14px;
+    background: #fff;
+    border:1px solid #ffc3dd;
+    border-radius: 999px;
+    display:inline-flex; align-items:center; gap:8px;
+  }
+  .switch{
+    appearance:none; width:46px; height:26px; border-radius:999px;
+    background:#ffd3e7; position:relative; outline:none; cursor:pointer; border:none;
+    transition: background .2s ease;
+  }
+  .switch::after{
+    content:""; width:20px; height:20px; border-radius:50%;
+    background:#fff; position:absolute; top:3px; left:3px; transition: left .2s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,.12);
+  }
+  .switch:checked{ background:#ff8fb8; }
+  .switch:checked::after{ left:23px; }
+
+  .btn{
+    border:none; border-radius: 12px; padding: 10px 14px; cursor:pointer;
+    background: linear-gradient(135deg, #ff7bac, #ff5f9a);
+    color:white; font-weight:700;
+    box-shadow: 0 10px 18px rgba(255,105,180,.28);
+    transition: transform .06s ease, filter .2s, box-shadow .2s;
+  }
+  .btn:active{ transform: translateY(1px) scale(.98); }
+  .btn.ghost{
+    background:#fff; color:#a0165a; border:1px solid #ffc3dd; box-shadow:none;
+  }
+
+  .alarm-list{
+    margin-top:16px;
+    display:flex; flex-direction:column; gap:10px;
+    max-height: 380px;
+    overflow:auto;
+    padding-right:4px;
+  }
+  .alarm-item{
+    display:grid; grid-template-columns: 1fr auto; gap:8px; align-items:center;
+    background:#fff;
+    border:1px solid #ffd1e4; border-radius:14px; padding:10px 12px;
+  }
+  .alarm-main{ display:flex; flex-wrap:wrap; gap:8px; align-items:center }
+  .alarm-time{
+    font-weight:800; font-size:18px; padding:6px 10px; border-radius:10px;
+    background:#fff4fa; border:1px solid #ffd3e7;
+  }
+  .alarm-label{ opacity:.9 }
+  .alarm-tags{ display:flex; gap:6px; align-items:center; flex-wrap:wrap }
+  .tag{
+    font-size:12px; padding:6px 8px; border-radius:999px; border:1px dashed #ffb6d6; background:#fff9fc;
+  }
+  .muted{ opacity:.6 }
+  .alarm-actions{ display:flex; gap:8px; align-items:center }
+  .icon-btn{
+    background:#fff; border:1px solid #ffc3dd; border-radius:10px; padding:8px; cursor:pointer;
+    transition:.2s; display:inline-flex; align-items:center; justify-content:center;
+  }
+  .icon-btn:hover{ background:#fff3f9 }
+  .danger{ border-color:#ff8fb8; color:#b0175e }
+
+  /* modal */
+  .modal{
+    position:fixed; inset:0; display:none; align-items:center; justify-content:center;
+    background: rgba(255, 142, 177, .22);
+    backdrop-filter: blur(2px);
+    z-index: 40;
+  }
+  .modal.show{ display:flex; animation: fadeIn .18s ease-out; }
+  @keyframes fadeIn { from{ opacity:0 } to{ opacity:1 } }
+  .modal-card{
+    width:min(520px, 92vw);
+    background: #fffdfa;
+    border: 1px solid #ffcfe6;
+    border-radius: 22px;
+    padding: 20px 18px;
+    box-shadow: 0 20px 50px rgba(255, 64, 129, .35);
+    text-align:center;
+  }
+  .ringing-title{
+    font-size:24px; margin:6px 0 10px; color:#b0175e;
+  }
+  .ringing-time{
+    font-size:42px; font-weight:800; margin: 6px 0 10px;
+  }
+
+  /* music player */
+  .player{
+    display:grid; gap:12px;
+  }
+  .playlist{
+    max-height: 280px; overflow:auto; display:flex; flex-direction:column; gap:8px;
+  }
+  .track{
+    display:grid; grid-template-columns: auto 1fr auto; gap:10px; align-items:center;
+    background:#fff; border:1px solid #ffd1e4; border-radius:12px; padding:10px;
+    cursor:pointer;
+  }
+  .track.active{ outline:3px solid rgba(255,105,180,.18) }
+  .track small{ opacity:.7 }
+
+  .controls{ display:flex; gap:10px; align-items:center; flex-wrap:wrap }
+  .range{ width: 180px }
+  .timepair{ font-variant-numeric: tabular-nums; opacity:.8 }
+
+  /* floating flowers */
+  @keyframes float {
+    0% { transform: translateY(0) rotate(0deg); opacity:.9 }
+    100%{ transform: translateY(-60px) rotate(10deg); opacity:.4 }
+  }
+  .petal{
+    position:absolute; width:16px; height:16px; border-radius:50% 50% 50% 0;
+    background: #ff9cc6; transform: rotate(45deg);
+    filter: blur(.2px);
+    animation: float 3s ease-in-out infinite alternate;
+    opacity:.8;
+  }
+  .petal:nth-child(odd){ background:#ffb3d3 }
+</style>
+</head>
+<body>
+  <header>
+    <h1 class="title">Abishma Care</h1>
+    <div class="subtitle">A cute pink floral alarm + music player, made with love 🌸</div>
+  </header>
+
+  <main class="container">
+    <!-- Left column: Alarm -->
+    <section class="card">
+      <h2>⏰ Alarm Clock</h2>
+
+      <div class="clock" aria-live="polite">
+        <div>
+          <div class="time" id="nowTime">--:--:--</div>
+          <div class="date" id="nowDate">—</div>
+        </div>
+        <div class="chip" title="Vibrate device when supported">
+          <span>Vibration</span>
+          <input id="globalVibe" type="checkbox" class="switch" />
+        </div>
+      </div>
+
+      <div style="height:12px"></div>
+
+      <form id="alarmForm" class="row" autocomplete="off">
+        <div class="field">
+          <label for="alarmTime">Time</label>
+          <input id="alarmTime" type="time" required />
+        </div>
+
+        <div class="field" style="min-width:220px">
+          <label for="alarmLabel">Label</label>
+          <input id="alarmLabel" type="text" placeholder="e.g., Wake up, Princess 🌷" maxlength="40" />
+        </div>
+
+        <div class="field" style="min-width:210px">
+          <label for="alarmSoundMode">Sound Source</label>
+          <select id="alarmSoundMode">
+            <option value="preset" selected>Preset sound</option>
+            <option value="file">Choose file</option>
+          </select>
+        </div>
+
+        <div class="field" id="presetWrap" style="min-width:210px">
+          <label for="presetSelect">Preset</label>
+          <select id="presetSelect"></select>
+        </div>
+
+        <div class="field" id="fileWrap" style="display:none; min-width:240px">
+          <label for="filePicker">Select Audio File</label>
+          <input id="filePicker" type="file" accept="audio/*" />
+        </div>
+
+        <div class="chip" title="Enable vibration for this alarm">
+          <span>Vibrate</span>
+          <input id="alarmVibrate" type="checkbox" class="switch" />
+        </div>
+
+        <button class="btn" id="addAlarmBtn" type="submit">Add Alarm</button>
+      </form>
+
+      <div style="height:10px"></div>
+      <div class="alarm-list" id="alarmList" aria-live="polite"></div>
+    </section>
+
+    <!-- Right column: Music -->
+    <section class="card">
+      <h2>🎧 Music Player</h2>
+
+      <div class="row">
+        <input id="musicPicker" type="file" accept="audio/*" multiple style="display:none" />
+        <button class="btn" id="addTracksBtn" type="button">Add Songs</button>
+        <button class="btn ghost" id="clearPlaylistBtn" type="button">Clear Playlist</button>
+      </div>
+
+      <div class="playlist" id="playlist"></div>
+
+      <div class="player">
+        <audio id="audio" preload="metadata"></audio>
+
+        <div class="controls">
+          <button class="icon-btn" id="prevBtn" title="Previous">⏮</button>
+          <button class="btn" id="playBtn" title="Play/Pause">▶️</button>
+          <button class="icon-btn" id="nextBtn" title="Next">⏭</button>
+
+          <input class="range" type="range" id="seek" min="0" max="100" value="0" />
+          <span class="timepair"><span id="cur">0:00</span> / <span id="dur">0:00</span></span>
+
+          <span style="margin-left:auto"></span>
+          <span>🔊</span>
+          <input class="range" type="range" id="vol" min="0" max="1" step="0.01" value="1" />
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal for ringing alarm -->
+  <div class="modal" id="ringModal" role="dialog" aria-modal="true" aria-labelledby="ringTitle">
+    <div class="modal-card">
+      <div style="font-size:46px">🌸</div>
+      <div id="ringTitle" class="ringing-title">Alarm</div>
+      <div class="ringing-time" id="ringTime">--:--</div>
+      <div id="ringNote" style="opacity:.85; margin-bottom:14px"></div>
+      <div class="row" style="justify-content:center">
+        <button class="btn" id="stopAlarmBtn">Stop Alarm</button>
+      </div>
+      <div style="height:4px"></div>
+      <small style="opacity:.7">Tip: make sure your device volume is up 💗</small>
+    </div>
+  </div>
+
+  <!-- floating petals (decor) -->
+  <div id="petalLayer" aria-hidden="true"></div>
+
+<script>
+/* -------------------- PRESET SOUNDS (embedded base64 WAV, offline-ready) -------------------- */
+/* Three gentle tones: 440Hz, 660Hz, 880Hz (~1.2s each, looping on ring) */
+const PRESET_SOUNDS = [
+  { id: "tone1", name: "Gentle Chime A (440Hz)", url: "data:audio/wav;base64,UklGRtzOAABXQVZFZm10IBAAAAABAAEAIlYAAESsAAACABYAAA9JbnRlcnByZXRlZCBieSBQeXRob24ACAAACAAAAGQAAABhAAAAAQAAAgAAAFYAAABlAAAAZAAAAGkAAAABAAAqAAABcQAAABwAAABkYXRhWc4AAB8AAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAA=" },
+  { id: "tone2", name: "Gentle Chime B (660Hz)", url: "data:audio/wav;base64,UklGRsDPAABXQVZFZm10IBAAAAABAAEAIlYAAERiAAACABYAAA9JbnRlcnByZXRlZCBieSBQeXRob24ACAAACAAAAGQAAABhAAAAAQAAAgAAAFYAAABlAAAAZAAAAGkAAAABAAAqAAABcQAAABwAAABkYXRhQ88AAB8AAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAA=" },
+  { id: "tone3", name: "Bright Chime C (880Hz)", url: "data:audio/wav;base64,UklGRo3PAABXQVZFZm10IBAAAAABAAEAIlYAAER8AAACABYAAA9JbnRlcnByZXRlZCBieSBQeXRob24ACAAACAAAAGQAAABhAAAAAQAAAgAAAFYAAABlAAAAZAAAAGkAAAABAAAqAAABcQAAABwAAABkYXRhfc8AAB8AAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAAAHgAAAB4AAAAeAAA=" },
+];
+
+/* -------------------- UTILITIES -------------------- */
+const $ = sel => document.querySelector(sel);
+const $$ = sel => Array.from(document.querySelectorAll(sel));
+const pad2 = n => String(n).padStart(2, '0');
+
+function niceTimeFromMinutes(totalMinutes){
+  const h = Math.floor(totalMinutes / 60) % 24;
+  const m = totalMinutes % 60;
+  return `${pad2(h)}:${pad2(m)}`;
+}
+function minutesFromHHMM(hhmm){
+  const [h,m] = hhmm.split(':').map(Number);
+  return h*60 + m;
+}
+function formatDuration(sec){
+  sec = Math.max(0, sec|0);
+  const m = (sec/60)|0, s = sec%60;
+  return `${m}:${pad2(s)}`;
+}
+
+/* -------------------- PERSISTENCE -------------------- */
+const LS_KEYS = {
+  ALARMS: 'abishma.alarms',
+  SETTINGS: 'abishma.settings',
+  PLAYER: 'abishma.player'
+};
+function loadJSON(key, fallback){
+  try{ const str = localStorage.getItem(key); return str ? JSON.parse(str) : fallback; }
+  catch(e){ return fallback; }
+}
+function saveJSON(key, obj){
+  localStorage.setItem(key, JSON.stringify(obj));
+}
+
+/* -------------------- CLOCK -------------------- */
+function updateNow(){
+  const now = new Date();
+  $('#nowTime').textContent = `${pad2(now.getHours())}:${pad2(now.getMinutes())}:${pad2(now.getSeconds())}`;
+  $('#nowDate').textContent = now.toLocaleDateString(undefined, { weekday:'long', month:'long', day:'numeric', year:'numeric' });
+}
+setInterval(updateNow, 500); updateNow();
+
+/* -------------------- ALARM MODEL -------------------- */
+let alarms = loadJSON(LS_KEYS.ALARMS, []);
+let settings = loadJSON(LS_KEYS.SETTINGS, { globalVibe:false });
+$('#globalVibe').checked = !!settings.globalVibe;
+$('#globalVibe').addEventListener('change', (e)=>{
+  settings.globalVibe = e.target.checked;
+  saveJSON(LS_KEYS.SETTINGS, settings);
+});
+
+function newId(){ return 'a_' + Math.random().toString(36).slice(2, 10); }
+
+function renderPresetSelect(){
+  const sel = $('#presetSelect');
+  sel.innerHTML = '';
+  PRESET_SOUNDS.forEach(p=>{
+    const opt = document.createElement('option');
+    opt.value = p.id; opt.textContent = p.name;
+    sel.appendChild(opt);
+  });
+}
+renderPresetSelect();
+
+$('#alarmSoundMode').addEventListener('change', (e)=>{
+  const mode = e.target.value;
+  $('#presetWrap').style.display = mode === 'preset' ? '' : 'none';
+  $('#fileWrap').style.display = mode === 'file' ? '' : 'none';
+});
+
+/* Runtime store for chosen files (cannot persist File blobs across reloads) */
+const runtimeFiles = new Map(); // alarmId -> objectURL
+
+function addAlarm(evt){
+  evt.preventDefault();
+  const time = $('#alarmTime').value;
+  if(!time){ alert('Please choose a time.'); return; }
+  const label = $('#alarmLabel').value.trim() || 'Alarm';
+  const vibrate = $('#alarmVibrate').checked;
+  const mode = $('#alarmSoundMode').value;
+
+  let sound = { type: 'preset', id: PRESET_SOUNDS[0].id }; // default
+  if(mode === 'preset'){
+    sound = { type: 'preset', id: $('#presetSelect').value };
+  }else{
+    const file = $('#filePicker').files[0];
+    if(file){
+      const id = newId(); // provisional to store mapping
+      sound = { type: 'file', name: file.name };
+      // We will assign the real alarm id after constructing it
+      const objURL = URL.createObjectURL(file);
+      // temp store by provisional id; will remap after alarm is created
+      runtimeFiles.set(id, objURL);
+      var provisionalId = id;
+    }else{
+      alert('Please choose an audio file for this alarm.'); return;
+    }
+  }
+
+  const alarm = {
+    id: newId(),
+    time,                        // "HH:MM"
+    minutes: minutesFromHHMM(time),
+    label,
+    vibrate,
+    sound,                       // {type:'preset', id } or {type:'file', name}
+    enabled: true,
+    lastTriggeredDate: null      // 'YYYY-MM-DD' to avoid multiple fires in a minute
+  };
+
+  // fix runtime file map to use the real alarm id
+  if(sound.type === 'file' && provisionalId){
+    const objURL = runtimeFiles.get(provisionalId);
+    runtimeFiles.delete(provisionalId);
+    runtimeFiles.set(alarm.id, objURL);
+  }
+
+  alarms.push(alarm);
+  saveJSON(LS_KEYS.ALARMS, alarms);
+  $('#alarmForm').reset();
+  $('#presetWrap').style.display = '';
+  $('#fileWrap').style.display = 'none';
+  renderAlarms();
+}
+$('#alarmForm').addEventListener('submit', addAlarm);
+
+function renderAlarms(){
+  const list = $('#alarmList'); list.innerHTML = '';
+  if(alarms.length === 0){
+    const empty = document.createElement('div');
+    empty.className='muted'; empty.style.padding='8px';
+    empty.textContent = 'No alarms yet. Add a sweet wake-up reminder 🌷';
+    list.appendChild(empty);
+    return;
+  }
+  alarms.sort((a,b)=> a.minutes - b.minutes);
+
+  for(const al of alarms){
+    const item = document.createElement('div');
+    item.className = 'alarm-item';
+    const main = document.createElement('div'); main.className='alarm-main';
+    const time = document.createElement('div'); time.className='alarm-time'; time.textContent = al.time;
+    const label = document.createElement('div'); label.className='alarm-label'; label.textContent = al.label;
+    const tags = document.createElement('div'); tags.className='alarm-tags';
+
+    const enTag = document.createElement('span'); enTag.className='tag'; enTag.textContent = al.enabled ? 'Enabled' : 'Disabled';
+    tags.appendChild(enTag);
+
+    const vibTag = document.createElement('span'); vibTag.className='tag'; vibTag.textContent = al.vibrate ? 'Vibrates' : 'No Vibration';
+    tags.appendChild(vibTag);
+
+    const sndTag = document.createElement('span'); sndTag.className='tag';
+    if(al.sound.type === 'preset'){
+      const p = PRESET_SOUNDS.find(s=>s.id===al.sound.id);
+      sndTag.textContent = p ? p.name : 'Preset';
+    }else{
+      // runtime file cannot persist after reload – show name and status
+      const hasURL = runtimeFiles.has(al.id);
+      sndTag.textContent = hasURL ? `File: ${al.sound.name}` : `File needed: ${al.sound.name}`;
+      sndTag.title = hasURL ? 'Using your chosen file' : 'After a reload, pick the file again in Edit';
+    }
+    tags.appendChild(sndTag);
+
+    main.appendChild(time); main.appendChild(label); main.appendChild(tags);
+
+    const actions = document.createElement('div'); actions.className='alarm-actions';
+
+    const toggle = document.createElement('input'); toggle.type='checkbox'; toggle.className='switch';
+    toggle.checked = al.enabled;
+    toggle.addEventListener('change', ()=>{
+      al.enabled = toggle.checked;
+      saveJSON(LS_KEYS.ALARMS, alarms);
+      renderAlarms();
+    });
+
+    const editBtn = document.createElement('button'); editBtn.className='icon-btn'; editBtn.title='Edit'; editBtn.textContent='✏️';
+    editBtn.addEventListener('click', ()=> editAlarm(al.id));
+
+    const delBtn = document.createElement('button'); delBtn.className='icon-btn danger'; delBtn.title='Delete'; delBtn.textContent='🗑';
+    delBtn.addEventListener('click', ()=>{
+      alarms = alarms.filter(x=>x.id!==al.id);
+      saveJSON(LS_KEYS.ALARMS, alarms);
+      if(runtimeFiles.has(al.id)){ URL.revokeObjectURL(runtimeFiles.get(al.id)); runtimeFiles.delete(al.id); }
+      renderAlarms();
+    });
+
+    actions.appendChild(toggle);
+    actions.appendChild(editBtn);
+    actions.appendChild(delBtn);
+
+    item.appendChild(main); item.appendChild(actions);
+    list.appendChild(item);
+  }
+}
+renderAlarms();
+
+/* Edit flow (inline prompt for simplicity) */
+function editAlarm(id){
+  const al = alarms.find(a=>a.id===id); if(!al) return;
+  const newTime = prompt('Edit time (HH:MM):', al.time);
+  if(!newTime) return;
+  const label = prompt('Edit label:', al.label) ?? al.label;
+
+  let mode = al.sound.type;
+  const chooseMode = prompt('Sound: type "preset" or "file"', mode) || mode;
+  let sound = al.sound;
+
+  if(chooseMode === 'preset'){
+    const presetNameList = PRESET_SOUNDS.map(s=>s.name).join('\n');
+    const name = prompt('Choose preset by name:\n' + presetNameList, PRESET_SOUNDS[0].name) || PRESET_SOUNDS[0].name;
+    const found = PRESET_SOUNDS.find(s=>s.name.toLowerCase()===name.toLowerCase()) || PRESET_SOUNDS[0];
+    sound = { type:'preset', id: found.id };
+    if(runtimeFiles.has(id)){ URL.revokeObjectURL(runtimeFiles.get(id)); runtimeFiles.delete(id); }
+  }else if(chooseMode === 'file'){
+    // open a hidden input to choose file
+    const tmp = document.createElement('input');
+    tmp.type='file'; tmp.accept='audio/*';
+    tmp.addEventListener('change', ()=>{
+      const f = tmp.files[0]; if(!f) return;
+      if(runtimeFiles.has(id)){ URL.revokeObjectURL(runtimeFiles.get(id)); runtimeFiles.delete(id); }
+      const url = URL.createObjectURL(f);
+      runtimeFiles.set(id, url);
+      al.sound = { type:'file', name: f.name };
+      saveJSON(LS_KEYS.ALARMS, alarms);
+      renderAlarms();
+    }, { once:true });
+    tmp.click();
+  }
+
+  al.time = newTime;
+  al.minutes = minutesFromHHMM(newTime);
+  al.label = label;
+  if(chooseMode === 'preset') al.sound = sound;
+
+  saveJSON(LS_KEYS.ALARMS, alarms);
+  renderAlarms();
+}
+
+/* -------------------- ALARM CHECK LOOP -------------------- */
+let ringCtx = {
+  audio: new Audio(),
+  activeAlarmId: null,
+  vibTimer: null
+};
+ringCtx.audio.loop = true;
+
+function getSoundURL(al){
+  if(al.sound.type === 'preset'){
+    const p = PRESET_SOUNDS.find(s=>s.id===al.sound.id) || PRESET_SOUNDS[0];
+    return p.url;
+  }else{
+    return runtimeFiles.get(al.id) || null;
+  }
+}
+
+function openRingModal(al){
+  $('#ringTitle').textContent = al.label || 'Alarm';
+  $('#ringTime').textContent = al.time;
+  $('#ringNote').textContent = (al.sound.type==='file' && !runtimeFiles.get(al.id))
+    ? 'Note: your custom sound file needs to be reselected after page reload. Using default chime.'
+    : '';
+  $('#ringModal').classList.add('show');
+}
+function closeRingModal(){
+  $('#ringModal').classList.remove('show');
+}
+
+async function stopRinging(){
+  try { ringCtx.audio.pause(); ringCtx.audio.currentTime = 0; } catch(e){}
+  if(ringCtx.vibTimer){ clearInterval(ringCtx.vibTimer); ringCtx.vibTimer = null; }
+  if(navigator.vibrate) navigator.vibrate(0);
+  ringCtx.activeAlarmId = null;
+  closeRingModal();
+}
+
+$('#stopAlarmBtn').addEventListener('click', stopRinging);
+
+function tickAlarms(){
+  const now = new Date();
+  const minutesNow = now.getHours()*60 + now.getMinutes();
+  const today = now.toISOString().slice(0,10);
+
+  for(const al of alarms){
+    if(!al.enabled) continue;
+    if(al.minutes !== minutesNow) continue;
+
+    // ensure not retriggering in same date-minute
+    if(al.lastTriggeredDate === today) continue;
+
+    // play sound
+    let url = getSoundURL(al);
+    if(!url){
+      // fallback to first preset if the chosen file isn't available after reload
+      url = PRESET_SOUNDS[0].url;
+    }
+    ringCtx.audio.src = url;
+    ringCtx.audio.play().catch(()=>{ /* user gesture may be needed; modal still appears */ });
+
+    // vibration (global or per-alarm)
+    const useVibe = settings.globalVibe || al.vibrate;
+    if(useVibe && navigator.vibrate){
+      if(ringCtx.vibTimer){ clearInterval(ringCtx.vibTimer); }
+      navigator.vibrate([200, 100, 200, 150]);
+      ringCtx.vibTimer = setInterval(()=> navigator.vibrate([200, 100, 200, 150]), 1200);
+    }
+
+    ringCtx.activeAlarmId = al.id;
+    al.lastTriggeredDate = today;
+    saveJSON(LS_KEYS.ALARMS, alarms);
+    openRingModal(al);
+    break;
+  }
+}
+setInterval(tickAlarms, 1000);
+
+/* -------------------- MUSIC PLAYER -------------------- */
+const audio = $('#audio');
+const playlistEl = $('#playlist');
+let playlist = [];  // array of { name, url, title?, artist? }
+let currentIndex = -1;
+
+function loadPlayerState(){
+  const p = loadJSON(LS_KEYS.PLAYER, null);
+  if(!p) return;
+  if(Array.isArray(p.list)){
+    playlist = p.list.map(t => ({...t, url: null})); // URLs are session-only, re-pick files
+  }
+  currentIndex = typeof p.index === 'number' ? p.index : -1;
+}
+function savePlayerState(){
+  const safeList = playlist.map(({name, title, artist}) => ({name, title, artist}));
+  saveJSON(LS_KEYS.PLAYER, { list: safeList, index: currentIndex, t: audio.currentTime || 0 });
+}
+loadPlayerState();
+
+function createTrackEl(track, idx){
+  const el = document.createElement('div');
+  el.className = 'track' + (idx===currentIndex?' active':'');
+  const badge = document.createElement('div'); badge.textContent = idx===currentIndex ? '🎵' : '♪';
+  const info = document.createElement('div');
+  const strong = document.createElement('div'); strong.style.fontWeight='700';
+  strong.textContent = track.title || track.name;
+  const small = document.createElement('small'); small.textContent = track.artist || '—';
+  info.appendChild(strong); info.appendChild(small);
+  const more = document.createElement('div'); more.style.opacity='.65'; more.textContent = '▶️';
+  el.appendChild(badge); el.appendChild(info); el.appendChild(more);
+  el.addEventListener('click', ()=> playIndex(idx));
+  return el;
+}
+
+function renderPlaylist(){
+  playlistEl.innerHTML = '';
+  if(playlist.length===0){
+    const empty = document.createElement('div');
+    empty.className='muted'; empty.style.padding='6px';
+    empty.textContent='No songs yet. Click "Add Songs" to load from your device 🎀';
+    playlistEl.appendChild(empty);
+    return;
+  }
+  playlist.forEach((t,i)=> playlistEl.appendChild(createTrackEl(t,i)));
+}
+renderPlaylist();
+
+$('#addTracksBtn').addEventListener('click', ()=> $('#musicPicker').click());
+$('#clearPlaylistBtn').addEventListener('click', ()=>{
+  playlist.forEach(t=> t.url && URL.revokeObjectURL(t.url));
+  playlist = []; currentIndex = -1;
+  savePlayerState(); renderPlaylist();
+});
+
+$('#musicPicker').addEventListener('change', async (e)=>{
+  const files = Array.from(e.target.files || []);
+  for(const f of files){
+    const objURL = URL.createObjectURL(f);
+    const meta = await readID3v1(f).catch(()=> ({}));
+    playlist.push({ name: f.name, url: objURL, title: meta.title || null, artist: meta.artist || null });
+  }
+  if(currentIndex === -1 && playlist.length>0) currentIndex = 0;
+  savePlayerState(); renderPlaylist();
+  if(currentIndex>=0) loadIndex(currentIndex, /*autoPlay*/false);
+  e.target.value='';
+});
+
+async function readID3v1(file){
+  // ID3v1 lives in the last 128 bytes: "TAG" + title(30) + artist(30) + album(30) + year(4) + ...
+  const size = file.size;
+  if(size < 128) return {};
+  const blob = file.slice(size - 128, size);
+  const buf = await blob.arrayBuffer();
+  const bytes = new Uint8Array(buf);
+  if(String.fromCharCode(...bytes.slice(0,3)) !== 'TAG') return {};
+  const dec = (start,len)=> new TextDecoder('latin1').decode(bytes.slice(start,start+len)).replace(/\0+$/,'').trim();
+  return { title: dec(3,30) || null, artist: dec(33,30) || null };
+}
+
+function loadIndex(i, autoPlay=true){
+  if(i<0 || i>=playlist.length) return;
+  currentIndex = i;
+  // ensure URL exists (if restored from storage, prompt re-add)
+  if(!playlist[i].url){
+    alert(`Please re-add the file "${playlist[i].name}" to play it.`);
+    return;
+  }
+  audio.src = playlist[i].url;
+  $$('#playlist .track').forEach((el,idx)=> el.classList.toggle('active', idx===i));
+  if(autoPlay) audio.play().catch(()=>{});
+  savePlayerState();
+}
+function playIndex(i){ loadIndex(i, true); }
+
+$('#playBtn').addEventListener('click', ()=>{
+  if(audio.paused){ audio.play().catch(()=>{}); } else { audio.pause(); }
+});
+$('#prevBtn').addEventListener('click', ()=>{
+  if(playlist.length===0) return;
+  let i = currentIndex <= 0 ? playlist.length-1 : currentIndex-1;
+  loadIndex(i, true);
+});
+$('#nextBtn').addEventListener('click', ()=>{
+  if(playlist.length===0) return;
+  let i = (currentIndex + 1) % playlist.length;
+  loadIndex(i, true);
+});
+$('#vol').addEventListener('input', e=> audio.volume = +e.target.value);
+
+audio.addEventListener('play', ()=> $('#playBtn').textContent='⏸');
+audio.addEventListener('pause', ()=> $('#playBtn').textContent='▶️');
+
+audio.addEventListener('ended', ()=>{
+  // auto-next
+  if(playlist.length>0){
+    let i = (currentIndex + 1) % playlist.length;
+    loadIndex(i, true);
+  }
+});
+audio.addEventListener('loadedmetadata', ()=>{
+  $('#dur').textContent = formatDuration(audio.duration || 0);
+});
+audio.addEventListener('timeupdate', ()=>{
+  $('#cur').textContent = formatDuration(audio.currentTime || 0);
+  if(audio.duration) $('#seek').value = ((audio.currentTime / audio.duration) * 100) | 0;
+});
+$('#seek').addEventListener('input', (e)=>{
+  if(!audio.duration) return;
+  const pct = +e.target.value / 100;
+  audio.currentTime = audio.duration * pct;
+});
+
+window.addEventListener('beforeunload', ()=>{
+  savePlayerState();
+});
+
+/* -------------------- PETAL DECOR -------------------- */
+(function petals(){
+  const layer = $('#petalLayer');
+  for(let i=0;i<24;i++){
+    const p = document.createElement('div');
+    p.className='petal';
+    p.style.left = (Math.random()*100)+'vw';
+    p.style.top = (Math.random()*100)+'vh';
+    p.style.animationDelay = (Math.random()*2)+'s';
+    p.style.opacity = (0.5 + Math.random()*0.5).toFixed(2);
+    layer.appendChild(p);
+  }
+})();
+
+/* -------------------- ACCESSIBILITY TWEAKS -------------------- */
+document.addEventListener('keydown', (e)=>{
+  if(e.key === 'Escape' && $('#ringModal').classList.contains('show')) stopRinging();
+});
+
+</script>
+</body>
+</html>
