@@ -1,542 +1,1228 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bishwa Bandhu Aryal</title>
-<style>
-/* Reset */
-* {margin:0; padding:0; box-sizing:border-box; font-family: 'Arial', sans-serif;}
-html, body {height:100%; scroll-behavior:smooth; background:#e0f7fa; color:#333; overflow-x:hidden;}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bishwa Bandhu Aryal | Banking Professional</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Base Styles & Variables */
+        :root {
+            --primary: #0288d1;
+            --primary-light: #e1f5fe;
+            --accent: #ffffff;
+            --text: #333333;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
 
-/* Animations */
-@keyframes fadeInUp { 0%{opacity:0; transform:translateY(30px);} 100%{opacity:1; transform:translateY(0);} }
-@keyframes fadeInLeft {0%{opacity:0; transform:translateX(-50px);}100%{opacity:1; transform:translateX(0);} }
-@keyframes fadeInRight {0%{opacity:0; transform:translateX(50px);}100%{opacity:1; transform:translateX(0);} }
-@keyframes pulse { 0%{transform:scale(1);}50%{transform:scale(1.05);}100%{transform:scale(1);} }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-/* Header */
-header { position: sticky; top:0; z-index:100; backdrop-filter: blur(10px); background: rgba(255,255,255,0.95); box-shadow:0 2px 10px rgba(0,0,0,0.1);}
-nav { display:flex; justify-content:center; gap:15px; padding:15px 0; flex-wrap:wrap; background:#b3e5fc; border-radius:12px; box-shadow:0 5px 15px rgba(0,0,0,0.1);}
-nav a { display:inline-block; padding:12px 25px; background:#b3e5fc; color:#0277bd; font-weight:bold; border-radius:15px; text-align:center; transition:0.4s; box-shadow:0 3px 6px rgba(0,0,0,0.1);}
-nav a:hover { background:#0288d1; color:#fff; transform:translateY(-3px) scale(1.05);}
-nav a.active { background:#0288d1; color:#fff; transform:scale(1.05); }
+        html {
+            scroll-behavior: smooth;
+        }
 
-/* Sections */
-.page-section { display:none; min-height: calc(100vh - 80px); padding:80px 20px; opacity:0; transform:translateY(30px); transition: all 0.8s ease;}
-.page-section.active { display:block; opacity:1; transform:translateY(0); animation: fadeInUp 1s ease forwards;}
+        body {
+            background-color: var(--primary-light);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
 
-/* Headings */
-h1,h2 { text-align:center; margin-bottom:30px; background: linear-gradient(90deg,#29b6f6,#0288d1); -webkit-background-clip:text; color:transparent; animation: fadeInUp 1s ease; }
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
 
-/* Buttons */
-.cta-button { display:block; margin:30px auto; padding:15px 30px; background:#0288d1; color:#fff; font-weight:bold; border:none; border-radius:12px; cursor:pointer; box-shadow:0 5px 15px rgba(0,0,0,0.2); transition:0.4s; animation:pulse 2s infinite;}
-.cta-button:hover { transform:translateY(-3px) scale(1.05); background:#0277bd; }
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background-color: rgba(2, 136, 209, 0.2);
+            animation: float 15s infinite linear;
+        }
 
-</style>
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100vw);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        section {
+            padding: 80px 0;
+            min-height: 100vh;
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        section.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+            color: var(--primary);
+            position: relative;
+            font-size: 2.5rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--primary);
+            border-radius: 2px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: var(--primary);
+            color: var(--accent);
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            border: none;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+        }
+
+        .btn:hover {
+            background-color: #01579b;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Header Styles */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--accent);
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            padding: 15px 0;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: var(--text);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-left: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            position: relative;
+            padding: 5px 0;
+            transition: var(--transition);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .nav-links a.active {
+            color: var(--primary);
+        }
+
+        .menu-toggle {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary);
+        }
+
+        /* Home Section */
+        #home {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .home-content {
+            max-width: 800px;
+            z-index: 1;
+        }
+
+        .home-title {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+            animation: fadeInDown 1s ease;
+        }
+
+        .home-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            color: var(--text);
+            animation: fadeInUp 1s ease 0.3s forwards;
+            opacity: 0;
+        }
+
+        .home-cta {
+            animation: fadeIn 1s ease 0.6s forwards;
+            opacity: 0;
+        }
+
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+
+        .shape {
+            position: absolute;
+            opacity: 0.1;
+            animation: floating 10s infinite ease-in-out;
+        }
+
+        .shape-1 {
+            top: 20%;
+            left: 10%;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            animation-delay: 0s;
+        }
+
+        .shape-2 {
+            top: 60%;
+            left: 80%;
+            width: 80px;
+            height: 80px;
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            background-color: var(--primary);
+            animation-delay: 2s;
+        }
+
+        .shape-3 {
+            top: 40%;
+            left: 70%;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            animation-delay: 4s;
+        }
+
+        .shape-4 {
+            top: 70%;
+            left: 20%;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            animation-delay: 6s;
+        }
+
+        @keyframes floating {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(10deg);
+            }
+        }
+
+        /* About Section */
+        .about-content {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .about-text {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .about-text p {
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .about-text p:nth-child(1) { animation-delay: 0.2s; }
+        .about-text p:nth-child(2) { animation-delay: 0.4s; }
+        .about-text p:nth-child(3) { animation-delay: 0.6s; }
+
+        .highlight-quote {
+            background-color: var(--accent);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            margin: 30px 0;
+            border-left: 5px solid var(--primary);
+            opacity: 0;
+            transform: translateX(-20px);
+            animation: fadeInRight 0.8s ease 0.8s forwards;
+        }
+
+        .highlight-quote p {
+            font-style: italic;
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin: 0;
+        }
+
+        /* Portfolio Section */
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .portfolio-item {
+            background-color: var(--accent);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .portfolio-item:hover {
+            transform: translateY(-10px) rotate(2deg);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .portfolio-img {
+            height: 200px;
+            background-color: #b3e5fc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .portfolio-img i {
+            font-size: 4rem;
+            color: var(--primary);
+            animation: float 8s infinite ease-in-out;
+        }
+
+        .portfolio-info {
+            padding: 20px;
+        }
+
+        .portfolio-title {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .portfolio-link {
+            display: inline-block;
+            margin-top: 15px;
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+            position: relative;
+        }
+
+        .portfolio-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary);
+            transition: var(--transition);
+        }
+
+        .portfolio-link:hover::after {
+            width: 100%;
+        }
+
+        /* Skills Section */
+        .skills-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .skill {
+            margin-bottom: 30px;
+            opacity: 0;
+            transform: translateX(-20px);
+            animation: fadeInRight 0.8s ease forwards;
+        }
+
+        .skill-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .skill-name {
+            font-weight: 600;
+        }
+
+        .skill-percent {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .skill-bar {
+            height: 10px;
+            background-color: #b3e5fc;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .skill-progress {
+            height: 100%;
+            background-color: var(--primary);
+            border-radius: 5px;
+            width: 0;
+            transition: width 1.5s ease;
+        }
+
+        /* Achievements Section */
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .achievement-item {
+            background-color: var(--accent);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: var(--transition);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .achievement-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .achievement-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .achievement-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        /* Contact Section */
+        .contact-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+        }
+
+        .contact-info {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .contact-info-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            opacity: 0;
+            transform: translateX(-20px);
+            animation: fadeInRight 0.8s ease forwards;
+        }
+
+        .contact-info-item i {
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary);
+            color: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin-right: 15px;
+        }
+
+        .contact-form {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateX(20px);
+            animation: fadeInLeft 0.8s ease forwards;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #b3e5fc;
+            border-radius: 5px;
+            background-color: var(--accent);
+            transition: var(--transition);
+            font-size: 1rem;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(2, 136, 209, 0.2);
+        }
+
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s ease 0.6s forwards;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--primary);
+            color: var(--accent);
+            padding: 40px 0 20px;
+            text-align: center;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            margin-bottom: 30px;
+        }
+
+        .social-links li {
+            margin: 0 15px;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--accent);
+            border-radius: 50%;
+            font-size: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .scroll-top {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            background-color: var(--accent);
+            color: var(--primary);
+            border-radius: 50%;
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-size: 1.5rem;
+            box-shadow: var(--shadow);
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            z-index: 99;
+        }
+
+        .scroll-top.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .scroll-top:hover {
+            background-color: var(--primary);
+            color: var(--accent);
+        }
+
+        .copyright {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Ripple Effect */
+        .ripple {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+        }
+
+        @keyframes ripple {
+            to {
+                transform: scale(2.5);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .home-title {
+                font-size: 2.8rem;
+            }
+            
+            .section-title {
+                font-size: 2.2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 70px);
+                background-color: var(--accent);
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                transition: var(--transition);
+                padding: 40px 0;
+            }
+            
+            .nav-links.active {
+                left: 0;
+            }
+            
+            .nav-links li {
+                margin: 15px 0;
+            }
+            
+            .home-title {
+                font-size: 2.5rem;
+            }
+            
+            .home-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .about-content {
+                flex-direction: column;
+            }
+            
+            .contact-container {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .home-title {
+                font-size: 2rem;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .portfolio-grid,
+            .achievements-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
+    <!-- Particle Background -->
+    <div class="particles" id="particles"></div>
 
-<header>
-<nav>
-<a href="#home" class="active">Home</a>
-<a href="#about">About</a>
-<a href="#portfolio">Portfolio</a>
-<a href="#skills">Skills</a>
-<a href="#achievements">Achievements</a>
-<a href="#contact">Contact</a>
-</nav>
-</header>
+    <!-- Header & Navigation -->
+    <header>
+        <div class="container">
+            <nav>
+                <a href="#" class="logo">Bishwa<span>Bandhu</span></a>
+                <div class="menu-toggle" id="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <ul class="nav-links" id="nav-links">
+                    <li><a href="#home" class="nav-link active">Home</a></li>
+                    <li><a href="#about" class="nav-link">About</a></li>
+                    <li><a href="#portfolio" class="nav-link">Portfolio</a></li>
+                    <li><a href="#skills" class="nav-link">Skills</a></li>
+                    <li><a href="#achievements" class="nav-link">Achievements</a></li>
+                    <li><a href="#contact" class="nav-link">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
-<section id="home" class="page-section active">
-<h1>Bishwa Bandhu Aryal</h1>
-<p>Professional banking specialist at NIC Asia Bank, Murgiya Branch, with over 10 years of experience in operations, customer relations, and financial services.</p>
-<button class="cta-button" onclick="showSection('contact')">Contact Me</button>
-</section>
+    <!-- Home Section -->
+    <section id="home" class="active">
+        <div class="container">
+            <div class="home-content">
+                <h1 class="home-title">Bishwa Bandhu Aryal</h1>
+                <p class="home-subtitle">Banking Professional at NIC Asia Bank | Financial Expert | Customer Service Specialist</p>
+                <div class="home-cta">
+                    <a href="#contact" class="btn" id="ripple-btn">Get In Touch</a>
+                </div>
+            </div>
+        </div>
+        <div class="floating-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+            <div class="shape shape-4"></div>
+        </div>
+    </section>
 
-<script>
-// Show section function
-function showSection(id){
-    document.querySelectorAll('.page-section').forEach(s=>s.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
+    <!-- About Section -->
+    <section id="about">
+        <div class="container">
+            <h2 class="section-title">About Me</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>I am a dedicated banking professional with over 10 years of experience in the financial sector, currently serving at NIC Asia Bank. My expertise lies in retail banking, customer relationship management, and financial advisory services.</p>
+                    <p>My journey in banking began after completing my Master's in Business Administration with a specialization in Finance. I've since worked in various capacities, from teller to relationship manager, gaining comprehensive knowledge of banking operations.</p>
+                    <p>Outside of my professional life, I am passionate about financial literacy education and regularly conduct workshops to help people better understand personal finance management.</p>
+                    
+                    <div class="highlight-quote">
+                        <p>"Banking is not just about money; it's about building relationships and helping clients achieve their financial goals."</p>
+                    </div>
+                    
+                    <p>I believe in continuous learning and regularly update my skills through professional development courses and certifications in the banking and finance sector.</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    document.querySelectorAll('nav a').forEach(a=>a.classList.remove('active'));
-    document.querySelector('nav a[href="#'+id+'"]').classList.add('active');
-}
+    <!-- Portfolio Section -->
+    <section id="portfolio">
+        <div class="container">
+            <h2 class="section-title">My Portfolio</h2>
+            <div class="portfolio-grid">
+                <div class="portfolio-item">
+                    <div class="portfolio-img">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="portfolio-info">
+                        <h3 class="portfolio-title">Digital Banking Initiative</h3>
+                        <p>Led the implementation of digital banking solutions that increased customer engagement by 35%.</p>
+                        <a href="#" class="portfolio-link">View Project</a>
+                    </div>
+                </div>
+                
+                <div class="portfolio-item">
+                    <div class="portfolio-img">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="portfolio-info">
+                        <h3 class="portfolio-title">Customer Retention Program</h3>
+                        <p>Developed and executed a customer retention strategy that reduced churn rate by 22%.</p>
+                        <a href="#" class="portfolio-link">View Project</a>
+                    </div>
+                </div>
+                
+                <div class="portfolio-item">
+                    <div class="portfolio-img">
+                        <i class="fas fa-hand-holding-usd"></i>
+                    </div>
+                    <div class="portfolio-info">
+                        <h3 class="portfolio-title">Loan Portfolio Management</h3>
+                        <p>Managed a diverse loan portfolio worth $15M while maintaining delinquency rates below industry average.</p>
+                        <a href="#" class="portfolio-link">View Project</a>
+                    </div>
+                </div>
+                
+                <div class="portfolio-item">
+                    <div class="portfolio-img">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <div class="portfolio-info">
+                        <h3 class="portfolio-title">Financial Literacy Workshops</h3>
+                        <p>Designed and delivered financial literacy programs that reached over 500 community members.</p>
+                        <a href="#" class="portfolio-link">View Project</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-// Nav click events
-document.querySelectorAll('nav a').forEach(link=>{
-    link.addEventListener('click', e=>{
-        e.preventDefault();
-        showSection(link.getAttribute('href').substring(1));
-    });
-});
-</script>
+    <!-- Skills Section -->
+    <section id="skills">
+        <div class="container">
+            <h2 class="section-title">My Skills</h2>
+            <div class="skills-container">
+                <div class="skill">
+                    <div class="skill-info">
+                        <span class="skill-name">Retail Banking</span>
+                        <span class="skill-percent">95%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" data-width="95%"></div>
+                    </div>
+                </div>
+                
+                <div class="skill">
+                    <div class="skill-info">
+                        <span class="skill-name">Customer Relationship Management</span>
+                        <span class="skill-percent">90%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" data-width="90%"></div>
+                    </div>
+                </div>
+                
+                <div class="skill">
+                    <div class="skill-info">
+                        <span class="skill-name">Financial Analysis</span>
+                        <span class="skill-percent">85%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" data-width="85%"></div>
+                    </div>
+                </div>
+                
+                <div class="skill">
+                    <div class="skill-info">
+                        <span class="skill-name">Risk Management</span>
+                        <span class="skill-percent">88%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" data-width="88%"></div>
+                    </div>
+                </div>
+                
+                <div class="skill">
+                    <div class="skill-info">
+                        <span class="skill-name">Digital Banking Solutions</span>
+                        <span class="skill-percent">82%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" data-width="82%"></div>
+                    </div>
+                </div>
+                
+                <div class="skill">
+                    <div class="skill-info">
+                        <span class="skill-name">Team Leadership</span>
+                        <span class="skill-percent">93%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" data-width="93%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Achievements Section -->
+    <section id="achievements">
+        <div class="container">
+            <h2 class="section-title">My Achievements</h2>
+            <div class="achievements-grid">
+                <div class="achievement-item">
+                    <div class="achievement-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <h3 class="achievement-title">Employee of the Year</h3>
+                    <p>Awarded NIC Asia Bank's Employee of the Year 2022 for outstanding performance and customer service excellence.</p>
+                </div>
+                
+                <div class="achievement-item">
+                    <div class="achievement-icon">
+                        <i class="fas fa-medal"></i>
+                    </div>
+                    <h3 class="achievement-title">Top Performer Award</h3>
+                    <p>Recognized as Top Performer for 5 consecutive quarters in loan portfolio growth and quality.</p>
+                </div>
+                
+                <div class="achievement-item">
+                    <div class="achievement-icon">
+                        <i class="fas fa-award"></i>
+                    </div>
+                    <h3 class="achievement-title">Certified Banking Professional</h3>
+                    <p>Achieved professional certification from the International Institute of Banking & Finance.</p>
+                </div>
+                
+                <div class="achievement-item">
+                    <div class="achievement-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h3 class="achievement-title">Community Service Award</h3>
+                    <p>Received recognition from local community for financial literacy initiatives and workshops.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact">
+        <div class="container">
+            <h2 class="section-title">Contact Me</h2>
+            <div class="contact-container">
+                <div class="contact-info">
+                    <div class="contact-info-item">
+                        <i class="fas fa-user"></i>
+                        <div>
+                            <h3>Name</h3>
+                            <p>Bishwa Bandhu Aryal</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-info-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h3>Email</h3>
+                            <p>bishwa.aryal@example.com</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-info-item">
+                        <i class="fas fa-phone"></i>
+                        <div>
+                            <h3>Phone</h3>
+                            <p>+977 9841234567</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-info-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <h3>Location</h3>
+                            <p>Kathmandu, Nepal</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contact-form">
+                    <div class="form-group">
+                        <label for="name">Your Name</label>
+                        <input type="text" id="name" class="form-control" placeholder="Enter your name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Your Email</label>
+                        <input type="email" id="email" class="form-control" placeholder="Enter your email">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Your Message</label>
+                        <textarea id="message" class="form-control" placeholder="Enter your message"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn submit-btn">Send Message</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <ul class="social-links">
+                <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+                <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                <li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
+                <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+            </ul>
+            
+            <div class="copyright">
+                <p>&copy; 2023 Bishwa Bandhu Aryal. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll to Top Button -->
+    <a href="#" class="scroll-top" id="scroll-top">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create particle background
+            createParticles();
+            
+            // Navigation functionality
+            const menuToggle = document.getElementById('menu-toggle');
+            const navLinks = document.getElementById('nav-links');
+            const navItems = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('section');
+            const scrollTop = document.getElementById('scroll-top');
+            
+            // Menu toggle for mobile
+            menuToggle.addEventListener('click', function() {
+                navLinks.classList.toggle('active');
+            });
+            
+            // Navigation click handler
+            navItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all nav items
+                    navItems.forEach(link => link.classList.remove('active'));
+                    
+                    // Add active class to clicked nav item
+                    this.classList.add('active');
+                    
+                    // Hide all sections
+                    sections.forEach(section => section.classList.remove('active'));
+                    
+                    // Show the target section
+                    const targetSection = this.getAttribute('href');
+                    document.querySelector(targetSection).classList.add('active');
+                    
+                    // Close mobile menu if open
+                    navLinks.classList.remove('active');
+                });
+            });
+            
+            // Ripple effect for buttons
+            const rippleBtn = document.getElementById('ripple-btn');
+            rippleBtn.addEventListener('click', function(e) {
+                const x = e.clientX - e.target.getBoundingClientRect().left;
+                const y = e.clientY - e.target.getBoundingClientRect().top;
+                
+                const ripple = document.createElement('span');
+                ripple.classList.add('ripple');
+                ripple.style.left = `${x}px`;
+                ripple.style.top = `${y}px`;
+                
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+            
+            // Animate skill bars when section is visible
+            const skillSection = document.getElementById('skills');
+            const skillBars = document.querySelectorAll('.skill-progress');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        skillBars.forEach(bar => {
+                            const width = bar.getAttribute('data-width');
+                            bar.style.width = width;
+                        });
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            observer.observe(skillSection);
+            
+            // Scroll to top functionality
+            window.addEventListener('scroll', function() {
+                if (window.pageYOffset > 300) {
+                    scrollTop.classList.add('active');
+                } else {
+                    scrollTop.classList.remove('active');
+                }
+            });
+            
+            scrollTop.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+            
+            // Create particles for background
+            function createParticles() {
+                const particlesContainer = document.getElementById('particles');
+                const numberOfParticles = 30;
+                
+                for (let i = 0; i < numberOfParticles; i++) {
+                    const particle = document.createElement('div');
+                    particle.classList.add('particle');
+                    
+                    // Random size between 5 and 15px
+                    const size = Math.random() * 10 + 5;
+                    particle.style.width = `${size}px`;
+                    particle.style.height = `${size}px`;
+                    
+                    // Random position
+                    const posX = Math.random() * 100;
+                    const posY = Math.random() * 100;
+                    particle.style.left = `${posX}%`;
+                    particle.style.top = `${posY}%`;
+                    
+                    // Random animation delay
+                    const delay = Math.random() * 15;
+                    particle.style.animationDelay = `${delay}s`;
+                    
+                    particlesContainer.appendChild(particle);
+                }
+            }
+        });
+    </script>
 </body>
 </html>
-<section id="about" class="page-section">
-<h2>About Me</h2>
-<div class="about-content" style="max-width:900px; margin:0 auto; animation: fadeInLeft 1s ease;">
-<p>I am Bishwa Bandhu Aryal, a professional banker currently working at NIC Asia Bank, Murgiya Branch. With over a decade of experience in banking operations, financial analysis, and customer management, I have developed a strong foundation in both operational excellence and client service.</p>
-
-<p>Throughout my career, I have led multiple projects to improve internal processes, enhance customer satisfaction, and optimize financial performance. I am passionate about mentoring teams, streamlining operations, and adopting innovative solutions in banking.</p>
-
-<p class="highlight-quote" style="color:#0288d1; font-weight:bold; font-size:1.3em; text-align:center; margin-top:20px;">"Integrity, dedication, and continuous learning define my professional journey."</p>
-</div>
-</section>
-
-<section id="portfolio" class="page-section">
-<h2>Portfolio</h2>
-<div class="card-container" style="display:flex; flex-wrap:wrap; justify-content:center; gap:25px;">
-<div class="card" style="animation: fadeInUp 1s ease 0.1s forwards; opacity:0;">
-<h3>Customer Management System</h3>
-<p>Developed a comprehensive system improving customer service efficiency and satisfaction by 25%.</p>
-</div>
-<div class="card" style="animation: fadeInUp 1s ease 0.3s forwards; opacity:0;">
-<h3>Financial Reports Automation</h3>
-<p>Automated report generation for the branch, saving 15 hours of manual work per week.</p>
-</div>
-<div class="card" style="animation: fadeInUp 1s ease 0.5s forwards; opacity:0;">
-<h3>Team Training Program</h3>
-<p>Designed and conducted programs to enhance employee skills in finance, compliance, and customer relations.</p>
-</div>
-<div class="card" style="animation: fadeInUp 1s ease 0.7s forwards; opacity:0;">
-<h3>Community Banking Outreach</h3>
-<p>Led community programs to educate customers about banking products and financial literacy.</p>
-</div>
-<div class="card" style="animation: fadeInUp 1s ease 0.9s forwards; opacity:0;">
-<h3>Process Optimization</h3>
-<p>Implemented workflow optimizations reducing branch operational delays by 20%.</p>
-</div>
-<div class="card" style="animation: fadeInUp 1s ease 1.1s forwards; opacity:0;">
-<h3>Digital Banking Initiative</h3>
-<p>Supported the digital banking transition, assisting customers with mobile and online banking tools.</p>
-</div>
-</div>
-</section>
-
-
-<section id="skills" class="page-section">
-<h2>Skills</h2>
-<div style="display:flex; flex-wrap:wrap; justify-content:center; gap:25px; margin-top:30px;">
-  <div class="skill-card" style="animation: fadeInLeft 1s ease 0.1s forwards; opacity:0;">
-    <h3>Communication</h3>
-    <div class="progress-bar"><div class="progress" data-width="95%"></div></div>
-  </div>
-  <div class="skill-card" style="animation: fadeInLeft 1s ease 0.3s forwards; opacity:0;">
-    <h3>Finance</h3>
-    <div class="progress-bar"><div class="progress" data-width="90%"></div></div>
-  </div>
-  <div class="skill-card" style="animation: fadeInLeft 1s ease 0.5s forwards; opacity:0;">
-    <h3>Customer Service</h3>
-    <div class="progress-bar"><div class="progress" data-width="85%"></div></div>
-  </div>
-  <div class="skill-card" style="animation: fadeInLeft 1s ease 0.7s forwards; opacity:0;">
-    <h3>Leadership</h3>
-    <div class="progress-bar"><div class="progress" data-width="80%"></div></div>
-  </div>
-  <div class="skill-card" style="animation: fadeInLeft 1s ease 0.9s forwards; opacity:0;">
-    <h3>Problem Solving</h3>
-    <div class="progress-bar"><div class="progress" data-width="75%"></div></div>
-  </div>
-  <div class="skill-card" style="animation: fadeInLeft 1s ease 1.1s forwards; opacity:0;">
-    <h3>Teamwork</h3>
-    <div class="progress-bar"><div class="progress" data-width="90%"></div></div>
-  </div>
-</div>
-</section>
-
-<section id="achievements" class="page-section">
-<h2>Achievements</h2>
-<div class="card-container" style="display:flex; flex-wrap:wrap; justify-content:center; gap:25px; margin-top:30px;">
-  <div class="card" style="animation: fadeInUp 1s ease 0.1s forwards; opacity:0;">
-    <p>Recognized as Best Employee at NIC Asia Bank in 2022 for outstanding service and performance.</p>
-  </div>
-  <div class="card" style="animation: fadeInUp 1s ease 0.3s forwards; opacity:0;">
-    <p>Successfully completed multiple financial certification programs, enhancing professional knowledge.</p>
-  </div>
-  <div class="card" style="animation: fadeInUp 1s ease 0.5s forwards; opacity:0;">
-    <p>Implemented a new customer management system increasing operational efficiency by 30%.</p>
-  </div>
-  <div class="card" style="animation: fadeInUp 1s ease 0.7s forwards; opacity:0;">
-    <p>Led financial literacy and community outreach initiatives educating customers about banking products.</p>
-  </div>
-  <div class="card" style="animation: fadeInUp 1s ease 0.9s forwards; opacity:0;">
-    <p>Mentored junior staff, improving overall team productivity and engagement.</p>
-  </div>
-</div>
-</section>
-
-<script>
-// Animate skill bars when visible
-function animateSkills(){
-  const skillBars = document.querySelectorAll('.progress');
-  skillBars.forEach(bar=>{
-    const width = bar.getAttribute('data-width');
-    bar.style.width = width;
-  });
-}
-
-// Trigger skills animation when section visible
-window.addEventListener('scroll', ()=>{
-  const skillsSection = document.getElementById('skills');
-  const sectionPos = skillsSection.getBoundingClientRect().top;
-  const screenPos = window.innerHeight / 1.2;
-  if(sectionPos < screenPos){
-    animateSkills();
-  }
-});
-</script>
-
-<section id="contact" class="page-section">
-<h2>Contact Me</h2>
-<div class="contact-info" style="text-align:center; margin-bottom:30px; animation: fadeInUp 1s ease;">
-<p>Name: Bishwa Bandhu Aryal</p>
-<p>Email: example@email.com</p>
-<p>Phone: +977-XXXXXXXXXX</p>
-<p>Location: Murgiya, Nepal</p>
-</div>
-<form class="contact-form">
-<input type="text" placeholder="Your Name" required>
-<input type="email" placeholder="Your Email" required>
-<textarea rows="5" placeholder="Your Message" required></textarea>
-<button type="submit">Send Message</button>
-</form>
-</section>
-
-<footer>
-<p>&copy; 2025 Bishwa Bandhu Aryal. All Rights Reserved.</p>
-<div>
-<a href="#">Facebook</a> |
-<a href="#">LinkedIn</a> |
-<a href="#">Twitter</a> |
-<a href="#home">Back to Top</a>
-</div>
-</footer>
-
-<script>
-// Function to show a specific section
-function showSection(id){
-  document.querySelectorAll('.page-section').forEach(s=>{
-    s.classList.remove('active');
-  });
-  document.getElementById(id).classList.add('active');
-
-  document.querySelectorAll('nav a').forEach(a=>{
-    a.classList.remove('active');
-  });
-  document.querySelector('nav a[href="#'+id+'"]').classList.add('active');
-}
-
-// Navigation click events
-document.querySelectorAll('nav a').forEach(link=>{
-  link.addEventListener('click', e=>{
-    e.preventDefault();
-    const target = link.getAttribute('href').substring(1);
-    showSection(target);
-    if(target === 'skills'){animateSkills();}
-  });
-});
-
-// Animate skill bars when visible
-function animateSkills(){
-  const skillBars = document.querySelectorAll('.progress');
-  skillBars.forEach(bar=>{
-    const width = bar.getAttribute('data-width');
-    bar.style.width = width;
-  });
-}
-
-// Optional: animate progress bars on load if Skills is default
-if(document.getElementById('skills').classList.contains('active')){
-  animateSkills();
-}
-
-// Animate cards on load (staggered)
-window.addEventListener('DOMContentLoaded', ()=>{
-  const cards = document.querySelectorAll('.card, .skill-card');
-  cards.forEach((card,i)=>{
-    setTimeout(()=>{ card.style.opacity='1'; }, i*200);
-  });
-});
-</script>
-</body>
-</html>
-
-<style>
-/* Floating icons */
-.floating-icon {
-  position: absolute;
-  width: 40px;
-  opacity: 0.7;
-  animation: float 8s linear infinite;
-  pointer-events: none;
-}
-@keyframes float {
-  0% { transform: translateY(100vh) translateX(0) rotate(0deg); opacity:0.5; }
-  50% { opacity:0.8; }
-  100% { transform: translateY(-50px) translateX(30px) rotate(360deg); opacity:0; }
-}
-
-/* Section heading hover glow */
-h2:hover { text-shadow: 0 0 15px #0288d1; transition:0.5s; }
-
-/* Card hover enhancement */
-.card:hover, .skill-card:hover {
-  transform: translateY(-20px) rotate(-2deg) scale(1.05);
-  box-shadow: 0 15px 35px rgba(0,0,0,0.3);
-  transition:0.5s;
-}
-
-/* Contact form input focus effect */
-.contact-form input:focus, .contact-form textarea:focus {
-  border-color: #0288d1;
-  box-shadow: 0 0 10px rgba(2,136,209,0.4);
-  outline: none;
-  transition:0.4s;
-}
-
-/* Animated gradient background for sections */
-.page-section {
-  background: linear-gradient(120deg, #e1f5fe, #ffffff);
-  transition: background 2s ease;
-}
-.page-section:hover {
-  background: linear-gradient(120deg, #b3e5fc, #ffffff);
-}
-
-/* Fade-in from bottom for text */
-.fade-text { opacity:0; animation: fadeInUp 1s ease forwards; }
-</style>
-
-<!-- Example floating icons -->
-<img src="https://via.placeholder.com/40/0288d1/ffffff?text=$" class="floating-icon" style="left:10%; animation-delay:0s;">
-<img src="https://via.placeholder.com/40/0288d1/ffffff?text=$" class="floating-icon" style="left:30%; animation-delay:2s;">
-<img src="https://via.placeholder.com/40/0288d1/ffffff?text=$" class="floating-icon" style="left:50%; animation-delay:4s;">
-<img src="https://via.placeholder.com/40/0288d1/ffffff?text=$" class="floating-icon" style="left:70%; animation-delay:6s;">
-<img src="https://via.placeholder.com/40/0288d1/ffffff?text=$" class="floating-icon" style="left:90%; animation-delay:8s;">
-
-<script>
-// Animate floating icons randomly across viewport width
-const icons = document.querySelectorAll('.floating-icon');
-icons.forEach(icon=>{
-  const randomX = Math.random() * window.innerWidth;
-  icon.style.left = randomX + 'px';
-  icon.style.top = window.innerHeight + 'px';
-});
-
-// Add subtle animation on hover for all section headings
-document.querySelectorAll('h2').forEach(h=>{
-  h.addEventListener('mouseenter', ()=>{ h.style.transform='scale(1.05)'; });
-  h.addEventListener('mouseleave', ()=>{ h.style.transform='scale(1)'; });
-});
-
-// Animate cards on entering viewport
-const observer = new IntersectionObserver(entries=>{
-  entries.forEach(entry=>{
-    if(entry.isIntersecting){
-      entry.target.style.opacity='1';
-      entry.target.style.transform='translateY(0)';
-    }
-  });
-},{threshold:0.2});
-document.querySelectorAll('.card, .skill-card').forEach(c=>observer.observe(c));
-</script>
-
-<style>
-/* Portfolio card image hover animation */
-.portfolio-item img {
-  transition: transform 0.6s ease, filter 0.6s ease;
-  border-radius: 10px;
-}
-.portfolio-item:hover img {
-  transform: scale(1.1) rotate(-2deg);
-  filter: brightness(1.1) contrast(1.05);
-}
-
-/* Skill count numbers */
-.skill-card h3::after {
-  content: attr(data-level) '%';
-  display:block;
-  font-size:0.9em;
-  color:#0288d1;
-  margin-top:5px;
-  animation: fadeInUp 1.2s ease forwards;
-}
-
-/* Button ripple effect */
-.cta-button {
-  position:relative;
-  overflow:hidden;
-}
-.cta-button::after {
-  content:'';
-  position:absolute;
-  width:100px; height:100px;
-  background:rgba(255,255,255,0.5);
-  display:block;
-  border-radius:50%;
-  pointer-events:none;
-  transform:scale(0);
-  opacity:0;
-  transition: transform 0.5s, opacity 0.5s;
-}
-.cta-button:active::after {
-  transform:scale(4);
-  opacity:0.6;
-  transition:0s;
-}
-
-/* Animated background circles */
-.bg-circle {
-  position:absolute;
-  border-radius:50%;
-  opacity:0.2;
-  animation: floatCircle linear infinite;
-}
-@keyframes floatCircle {
-  0% {transform:translateY(100vh) scale(0);}
-  50% {opacity:0.5;}
-  100% {transform:translateY(-100px) scale(1);}
-}
-</style>
-
-<!-- Background circles -->
-<div class="bg-circle" style="width:150px;height:150px;background:#0288d1;left:10%;animation-duration:20s;"></div>
-<div class="bg-circle" style="width:100px;height:100px;background:#29b6f6;left:40%;animation-duration:25s;"></div>
-<div class="bg-circle" style="width:200px;height:200px;background:#81d4fa;left:70%;animation-duration:30s;"></div>
-
-<script>
-// Animate skill numbers from 0 to level
-function animateSkillNumbers() {
-  document.querySelectorAll('.skill-card').forEach(card=>{
-    const level = parseInt(card.querySelector('h3').getAttribute('data-level'));
-    let count = 0;
-    const interval = setInterval(()=>{
-      if(count>=level){ clearInterval(interval); return; }
-      card.querySelector('h3').textContent = card.querySelector('h3').textContent.split('%')[0] + count + '%';
-      count++;
-    }, 20);
-  });
-}
-
-// Trigger skill numbers on skills section active
-const skillsSection = document.getElementById('skills');
-const skillsObserver = new IntersectionObserver(entries=>{
-  entries.forEach(entry=>{
-    if(entry.isIntersecting){
-      animateSkillNumbers();
-      skillsObserver.unobserve(skillsSection);
-    }
-  });
-},{threshold:0.5});
-skillsObserver.observe(skillsSection);
-
-// Portfolio image subtle float effect
-document.querySelectorAll('.portfolio-item img').forEach(img=>{
-  let dir = 1;
-  setInterval(()=>{
-    img.style.transform = `translateY(${5*dir}px)`;
-    dir*=-1;
-  }, 1500);
-});
-</script>
-
-<style>
-/* Smooth transition for all sections */
-.page-section {
-  transition: opacity 0.8s ease, transform 0.8s ease, background 1s ease;
-}
-
-/* Particle container */
-.particle-container {
-  position: fixed;
-  top:0; left:0;
-  width:100%; height:100%;
-  pointer-events:none;
-  overflow:hidden;
-  z-index:0;
-}
-
-/* Particle style */
-.particle {
-  position:absolute;
-  width:6px;
-  height:6px;
-  background:rgba(2,136,209,0.7);
-  border-radius:50%;
-  animation: particleMove linear infinite;
-}
-@keyframes particleMove {
-  0% { transform: translateY(100vh) scale(0.3); opacity:0; }
-  50% { opacity:0.5; }
-  100% { transform: translateY(-50px) scale(1); opacity:0; }
-}
-
-/* Text entrance effect */
-.fade-text-up { opacity:0; transform:translateY(30px); transition: all 0.8s ease; }
-.fade-text-up.show { opacity:1; transform:translateY(0); }
-
-/* Section heading sparkle effect on hover */
-h2:hover { text-shadow: 0 0 20px #29b6f6, 0 0 30px #0288d1; transition:0.5s; }
-</style>
-
-<!-- Particle container -->
-<div class="particle-container"></div>
-
-<script>
-// Create random particles
-const particleContainer = document.querySelector('.particle-container');
-for(let i=0; i<40; i++){
-  const p = document.createElement('div');
-  p.classList.add('particle');
-  p.style.left = Math.random()*100 + 'vw';
-  p.style.animationDuration = (10 + Math.random()*20) + 's';
-  p.style.width = (4 + Math.random()*6) + 'px';
-  p.style.height = p.style.width;
-  particleContainer.appendChild(p);
-}
-
-// IntersectionObserver for text fade-up effect
-const textElements = document.querySelectorAll('p, h1, h2, h3, h4');
-const textObserver = new IntersectionObserver(entries=>{
-  entries.forEach(entry=>{
-    if(entry.isIntersecting){
-      entry.target.classList.add('show');
-      textObserver.unobserve(entry.target);
-    }
-  });
-},{threshold:0.2});
-textElements.forEach(el=>el.classList.add('fade-text-up'));
-textElements.forEach(el=>textObserver.observe(el));
-
-// Smooth transition between sections
-function smoothSectionTransition(id){
-  document.querySelectorAll('.page-section').forEach(sec=>{
-    sec.style.opacity='0';
-    sec.style.transform='translateY(30px)';
-    sec.classList.remove('active');
-  });
-  const target = document.getElementById(id);
-  target.classList.add('active');
-  setTimeout(()=>{
-    target.style.opacity='1';
-    target.style.transform='translateY(0)';
-  },50);
-
-  document.querySelectorAll('nav a').forEach(a=>a.classList.remove('active'));
-  document.querySelector('nav a[href="#'+id+'"]').classList.add('active');
-
-  // Trigger skill animation if needed
-  if(id==='skills'){ animateSkills(); animateSkillNumbers(); }
-}
-
-// Update nav links to use smoothSectionTransition
-document.querySelectorAll('nav a').forEach(link=>{
-  link.addEventListener('click', e=>{
-    e.preventDefault();
-    const targetId = link.getAttribute('href').substring(1);
-    smoothSectionTransition(targetId);
-  });
-});
-</script>
