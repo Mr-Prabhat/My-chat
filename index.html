@@ -8,8 +8,8 @@
     <style>
         /* Base Styles & Variables */
         :root {
-            --primary: #0288d1;
-            --primary-light: #e1f5fe;
+            --primary: #d32f2f;
+            --primary-light: #ffcdd2;
             --accent: #ffffff;
             --text: #333333;
             --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -28,7 +28,7 @@
         }
 
         body {
-            background-color: var(--primary-light);
+            background-color: var(--accent);
             color: var(--text);
             line-height: 1.6;
             overflow-x: hidden;
@@ -48,7 +48,7 @@
         .particle {
             position: absolute;
             border-radius: 50%;
-            background-color: rgba(2, 136, 209, 0.2);
+            background-color: rgba(211, 47, 47, 0.15);
             animation: float 15s infinite linear;
         }
 
@@ -76,8 +76,8 @@
         }
 
         section {
-            padding: 80px 0;
-            min-height: 100vh;
+            padding: 60px 0;
+            min-height: auto;
             display: none;
             opacity: 0;
             transform: translateY(20px);
@@ -92,10 +92,10 @@
 
         .section-title {
             text-align: center;
-            margin-bottom: 50px;
+            margin-bottom: 40px;
             color: var(--primary);
             position: relative;
-            font-size: 2.5rem;
+            font-size: 2.2rem;
         }
 
         .section-title::after {
@@ -127,7 +127,7 @@
         }
 
         .btn:hover {
-            background-color: #01579b;
+            background-color: #b71c1c;
             transform: translateY(-3px);
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }
@@ -218,6 +218,7 @@
             text-align: center;
             position: relative;
             overflow: hidden;
+            padding: 120px 0 80px;
         }
 
         .home-content {
@@ -225,15 +226,32 @@
             z-index: 1;
         }
 
+        .profile-image {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin: 0 auto 30px;
+            overflow: hidden;
+            border: 5px solid var(--primary);
+            box-shadow: var(--shadow);
+            animation: fadeIn 1s ease;
+        }
+
+        .profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
         .home-title {
-            font-size: 3.5rem;
+            font-size: 3rem;
             margin-bottom: 20px;
             color: var(--primary);
             animation: fadeInDown 1s ease;
         }
 
         .home-subtitle {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             margin-bottom: 30px;
             color: var(--text);
             animation: fadeInUp 1s ease 0.3s forwards;
@@ -317,6 +335,25 @@
             gap: 40px;
         }
 
+        .about-image {
+            flex: 1;
+            min-width: 300px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .about-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: var(--transition);
+        }
+
+        .about-image:hover img {
+            transform: scale(1.05);
+        }
+
         .about-text {
             flex: 1;
             min-width: 300px;
@@ -334,11 +371,11 @@
         .about-text p:nth-child(3) { animation-delay: 0.6s; }
 
         .highlight-quote {
-            background-color: var(--accent);
-            padding: 30px;
+            background-color: var(--primary-light);
+            padding: 25px;
             border-radius: 10px;
             box-shadow: var(--shadow);
-            margin: 30px 0;
+            margin: 25px 0;
             border-left: 5px solid var(--primary);
             opacity: 0;
             transform: translateX(-20px);
@@ -356,7 +393,7 @@
         .portfolio-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 30px;
+            gap: 25px;
         }
 
         .portfolio-item {
@@ -377,17 +414,22 @@
 
         .portfolio-img {
             height: 200px;
-            background-color: #b3e5fc;
+            background-color: #ffcdd2;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
         }
 
-        .portfolio-img i {
-            font-size: 4rem;
-            color: var(--primary);
-            animation: float 8s infinite ease-in-out;
+        .portfolio-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .portfolio-item:hover .portfolio-img img {
+            transform: scale(1.1);
         }
 
         .portfolio-info {
@@ -395,7 +437,7 @@
         }
 
         .portfolio-title {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             margin-bottom: 10px;
             color: var(--primary);
         }
@@ -431,7 +473,7 @@
         }
 
         .skill {
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             opacity: 0;
             transform: translateX(-20px);
             animation: fadeInRight 0.8s ease forwards;
@@ -454,7 +496,7 @@
 
         .skill-bar {
             height: 10px;
-            background-color: #b3e5fc;
+            background-color: #ffcdd2;
             border-radius: 5px;
             overflow: hidden;
         }
@@ -470,13 +512,13 @@
         /* Achievements Section */
         .achievements-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
         }
 
         .achievement-item {
             background-color: var(--accent);
-            padding: 30px;
+            padding: 25px;
             border-radius: 10px;
             box-shadow: var(--shadow);
             text-align: center;
@@ -492,15 +534,49 @@
         }
 
         .achievement-icon {
-            font-size: 3rem;
+            font-size: 2.5rem;
             color: var(--primary);
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .achievement-title {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             margin-bottom: 15px;
             color: var(--primary);
+        }
+
+        /* Gallery Section */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .gallery-item {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s ease forwards;
+            height: 200px;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
         }
 
         /* Contact Section */
@@ -518,7 +594,7 @@
         .contact-info-item {
             display: flex;
             align-items: center;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             opacity: 0;
             transform: translateX(-20px);
             animation: fadeInRight 0.8s ease forwards;
@@ -558,7 +634,7 @@
         .form-control {
             width: 100%;
             padding: 12px 15px;
-            border: 2px solid #b3e5fc;
+            border: 2px solid #ffcdd2;
             border-radius: 5px;
             background-color: var(--accent);
             transition: var(--transition);
@@ -568,11 +644,11 @@
         .form-control:focus {
             border-color: var(--primary);
             outline: none;
-            box-shadow: 0 0 0 3px rgba(2, 136, 209, 0.2);
+            box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.2);
         }
 
         textarea.form-control {
-            min-height: 150px;
+            min-height: 120px;
             resize: vertical;
         }
 
@@ -586,7 +662,7 @@
         footer {
             background-color: var(--primary);
             color: var(--accent);
-            padding: 40px 0 20px;
+            padding: 30px 0 15px;
             text-align: center;
         }
 
@@ -594,7 +670,7 @@
             display: flex;
             justify-content: center;
             list-style: none;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .social-links li {
@@ -726,11 +802,11 @@
         /* Responsive Styles */
         @media (max-width: 992px) {
             .home-title {
-                font-size: 2.8rem;
+                font-size: 2.5rem;
             }
             
             .section-title {
-                font-size: 2.2rem;
+                font-size: 2rem;
             }
         }
 
@@ -762,15 +838,15 @@
             }
             
             .home-title {
-                font-size: 2.5rem;
+                font-size: 2.2rem;
             }
             
             .home-subtitle {
-                font-size: 1.2rem;
+                font-size: 1.1rem;
             }
             
             .section-title {
-                font-size: 2rem;
+                font-size: 1.8rem;
             }
             
             .about-content {
@@ -780,20 +856,30 @@
             .contact-container {
                 flex-direction: column;
             }
+
+            #home {
+                padding: 100px 0 60px;
+            }
         }
 
         @media (max-width: 576px) {
             .home-title {
-                font-size: 2rem;
-            }
-            
-            .section-title {
                 font-size: 1.8rem;
             }
             
+            .section-title {
+                font-size: 1.6rem;
+            }
+            
             .portfolio-grid,
-            .achievements-grid {
+            .achievements-grid,
+            .gallery-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .profile-image {
+                width: 150px;
+                height: 150px;
             }
         }
     </style>
@@ -816,6 +902,7 @@
                     <li><a href="#portfolio" class="nav-link">Portfolio</a></li>
                     <li><a href="#skills" class="nav-link">Skills</a></li>
                     <li><a href="#achievements" class="nav-link">Achievements</a></li>
+                    <li><a href="#gallery" class="nav-link">Gallery</a></li>
                     <li><a href="#contact" class="nav-link">Contact</a></li>
                 </ul>
             </nav>
@@ -826,6 +913,9 @@
     <section id="home" class="active">
         <div class="container">
             <div class="home-content">
+                <div class="profile-image">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Bishwa Bandhu Aryal">
+                </div>
                 <h1 class="home-title">Bishwa Bandhu Aryal</h1>
                 <p class="home-subtitle">Banking Professional at NIC Asia Bank | Financial Expert | Customer Service Specialist</p>
                 <div class="home-cta">
@@ -846,16 +936,18 @@
         <div class="container">
             <h2 class="section-title">About Me</h2>
             <div class="about-content">
+                <div class="about-image">
+                    <img src="https://images.unsplash.com/photo-1521737852567-6949f3f9f2b5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="About Bishwa Bandhu Aryal">
+                </div>
                 <div class="about-text">
                     <p>I am a dedicated banking professional with over 10 years of experience in the financial sector, currently serving at NIC Asia Bank. My expertise lies in retail banking, customer relationship management, and financial advisory services.</p>
                     <p>My journey in banking began after completing my Master's in Business Administration with a specialization in Finance. I've since worked in various capacities, from teller to relationship manager, gaining comprehensive knowledge of banking operations.</p>
-                    <p>Outside of my professional life, I am passionate about financial literacy education and regularly conduct workshops to help people better understand personal finance management.</p>
                     
                     <div class="highlight-quote">
                         <p>"Banking is not just about money; it's about building relationships and helping clients achieve their financial goals."</p>
                     </div>
                     
-                    <p>I believe in continuous learning and regularly update my skills through professional development courses and certifications in the banking and finance sector.</p>
+                    <p>Outside of my professional life, I am passionate about financial literacy education and regularly conduct workshops to help people better understand personal finance management.</p>
                 </div>
             </div>
         </div>
@@ -868,7 +960,7 @@
             <div class="portfolio-grid">
                 <div class="portfolio-item">
                     <div class="portfolio-img">
-                        <i class="fas fa-chart-line"></i>
+                        <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Digital Banking Initiative">
                     </div>
                     <div class="portfolio-info">
                         <h3 class="portfolio-title">Digital Banking Initiative</h3>
@@ -879,7 +971,7 @@
                 
                 <div class="portfolio-item">
                     <div class="portfolio-img">
-                        <i class="fas fa-users"></i>
+                        <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Customer Retention Program">
                     </div>
                     <div class="portfolio-info">
                         <h3 class="portfolio-title">Customer Retention Program</h3>
@@ -890,22 +982,11 @@
                 
                 <div class="portfolio-item">
                     <div class="portfolio-img">
-                        <i class="fas fa-hand-holding-usd"></i>
+                        <img src="https://images.unsplash.com/photo-1588215546952-4f7de81f6b8e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Loan Portfolio Management">
                     </div>
                     <div class="portfolio-info">
                         <h3 class="portfolio-title">Loan Portfolio Management</h3>
                         <p>Managed a diverse loan portfolio worth $15M while maintaining delinquency rates below industry average.</p>
-                        <a href="#" class="portfolio-link">View Project</a>
-                    </div>
-                </div>
-                
-                <div class="portfolio-item">
-                    <div class="portfolio-img">
-                        <i class="fas fa-lightbulb"></i>
-                    </div>
-                    <div class="portfolio-info">
-                        <h3 class="portfolio-title">Financial Literacy Workshops</h3>
-                        <p>Designed and delivered financial literacy programs that reached over 500 community members.</p>
                         <a href="#" class="portfolio-link">View Project</a>
                     </div>
                 </div>
@@ -957,26 +1038,6 @@
                         <div class="skill-progress" data-width="88%"></div>
                     </div>
                 </div>
-                
-                <div class="skill">
-                    <div class="skill-info">
-                        <span class="skill-name">Digital Banking Solutions</span>
-                        <span class="skill-percent">82%</span>
-                    </div>
-                    <div class="skill-bar">
-                        <div class="skill-progress" data-width="82%"></div>
-                    </div>
-                </div>
-                
-                <div class="skill">
-                    <div class="skill-info">
-                        <span class="skill-name">Team Leadership</span>
-                        <span class="skill-percent">93%</span>
-                    </div>
-                    <div class="skill-bar">
-                        <div class="skill-progress" data-width="93%"></div>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
@@ -1009,13 +1070,32 @@
                     <h3 class="achievement-title">Certified Banking Professional</h3>
                     <p>Achieved professional certification from the International Institute of Banking & Finance.</p>
                 </div>
-                
-                <div class="achievement-item">
-                    <div class="achievement-icon">
-                        <i class="fas fa-star"></i>
-                    </div>
-                    <h3 class="achievement-title">Community Service Award</h3>
-                    <p>Received recognition from local community for financial literacy initiatives and workshops.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery">
+        <div class="container">
+            <h2 class="section-title">My Gallery</h2>
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Banking Seminar">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Financial Workshop">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Team Meeting">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Award Ceremony">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1581091226033-d5c48150dbaa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Community Service">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Client Meeting">
                 </div>
             </div>
         </div>
@@ -1140,6 +1220,12 @@
                     
                     // Close mobile menu if open
                     navLinks.classList.remove('active');
+                    
+                    // Scroll to top of the page
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
                 });
             });
             
